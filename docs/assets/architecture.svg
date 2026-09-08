@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620">
+<style>
+text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#0f172a}.t{font-size:26px;font-weight:700}.s{font-size:18px}.box{fill:#f8fafc;stroke:#94a3b8;stroke-width:2}.ai{fill:#ede9fe;stroke:#8b5cf6}.data{fill:#e0f2fe;stroke:#0284c7}.tool{fill:#dcfce7;stroke:#16a34a}.out{fill:#fff7ed;stroke:#f97316}.line{stroke:#64748b;stroke-width:3;fill:none;marker-end:url(#a)}
+</style>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker></defs>
+<text x="700" y="48" text-anchor="middle" class="t">Архитектура SherlockPC</text>
+<rect x="560" y="75" width="280" height="68" rx="14" class="box"/><text x="700" y="115" text-anchor="middle" class="s">Пользователь / Desktop UI</text>
+<rect x="300" y="185" width="240" height="72" rx="14" class="ai"/><text x="420" y="227" text-anchor="middle" class="s">Router</text>
+<rect x="860" y="185" width="240" height="72" rx="14" class="ai"/><text x="980" y="227" text-anchor="middle" class="s">Investigation Planner</text>
+<path d="M650 143 L460 185" class="line"/><path d="M750 143 L940 185" class="line"/>
+<rect x="100" y="325" width="250" height="76" rx="14" class="tool"/><text x="225" y="358" text-anchor="middle" class="s">System / Process Tools</text><text x="225" y="383" text-anchor="middle" class="s">телеметрия • процессы</text>
+<rect x="575" y="325" width="250" height="76" rx="14" class="tool"/><text x="700" y="358" text-anchor="middle" class="s">File Search Tools</text><text x="700" y="383" text-anchor="middle" class="s">индекс • retrieval</text>
+<rect x="1050" y="325" width="250" height="76" rx="14" class="tool"/><text x="1175" y="358" text-anchor="middle" class="s">Activity Tools</text><text x="1175" y="383" text-anchor="middle" class="s">контекст • сессии</text>
+<path d="M420 257 L225 325" class="line"/><path d="M980 257 L700 325" class="line"/><path d="M980 257 L1175 325" class="line"/>
+<rect x="500" y="455" width="400" height="70" rx="14" class="data"/><text x="700" y="498" text-anchor="middle" class="s">Evidence Store / Local Storage</text>
+<path d="M225 401 L580 455" class="line"/><path d="M700 401 L700 455" class="line"/><path d="M1175 401 L820 455" class="line"/>
+<rect x="160" y="550" width="220" height="55" rx="14" class="ai"/><text x="270" y="584" text-anchor="middle" class="s">Investigator</text>
+<rect x="590" y="550" width="220" height="55" rx="14" class="ai"/><text x="700" y="584" text-anchor="middle" class="s">Critic</text>
+<rect x="1020" y="550" width="220" height="55" rx="14" class="ai"/><text x="1130" y="584" text-anchor="middle" class="s">Verifier</text>
+<path d="M600 525 L300 550" class="line"/><path d="M700 525 L700 550" class="line"/><path d="M800 525 L1100 550" class="line"/>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="430" viewBox="0 0 1400 430">
+<style>
+text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#0f172a}.t{font-size:26px;font-weight:700}.s{font-size:17px}.box{fill:#f8fafc;stroke:#94a3b8;stroke-width:2}.safe{fill:#dcfce7;stroke:#16a34a}.drop{fill:#fee2e2;stroke:#dc2626}.db{fill:#e0f2fe;stroke:#0284c7}.line{stroke:#64748b;stroke-width:3;fill:none;marker-end:url(#a)}
+</style>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker></defs>
+<text x="700" y="48" text-anchor="middle" class="t">Privacy by Architecture</text>
+<rect x="70" y="150" width="200" height="72" rx="14" class="box"/><text x="170" y="193" text-anchor="middle" class="s">OS Event</text>
+<rect x="350" y="150" width="220" height="72" rx="14" class="safe"/><text x="460" y="193" text-anchor="middle" class="s">Privacy Policy</text>
+<polygon points="700,135 800,186 700,237 600,186" fill="#fff7ed" stroke="#f97316" stroke-width="2"/><text x="700" y="193" text-anchor="middle" class="s">Разрешено?</text>
+<rect x="900" y="80" width="220" height="72" rx="14" class="drop"/><text x="1010" y="123" text-anchor="middle" class="s">DROP</text>
+<rect x="900" y="220" width="220" height="72" rx="14" class="safe"/><text x="1010" y="263" text-anchor="middle" class="s">Normalize</text>
+<rect x="1180" y="220" width="170" height="72" rx="14" class="db"/><text x="1265" y="252" text-anchor="middle" class="s">Local</text><text x="1265" y="275" text-anchor="middle" class="s">Storage</text>
+<path d="M270 186 L350 186" class="line"/><path d="M570 186 L600 186" class="line"/>
+<path d="M800 165 L900 116" class="line"/><text x="835" y="121" class="s">Нет</text>
+<path d="M800 207 L900 256" class="line"/><text x="835" y="260" class="s">Да</text>
+<path d="M1120 256 L1180 256" class="line"/>
+<text x="700" y="370" text-anchor="middle" class="s">Исключённые данные не сохраняются и никогда не попадают в память Sherlock.</text>
+</svg>
