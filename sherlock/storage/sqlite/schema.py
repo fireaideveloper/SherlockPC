@@ -1,0 +1,15 @@
+SCHEMA_VERSION = 1
+
+
+INITIAL_SCHEMA = """
+CREATE TABLE IF NOT EXISTS schema_info (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    version INTEGER NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS app_metadata (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+"""
