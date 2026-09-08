@@ -1,0 +1,23 @@
+[project]
+name = "sherlockpc"
+version = "0.1.0"
+description = "Evidence-driven local investigation system for personal computers"
+requires-python = ">=3.11"
+
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0"
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["sherlock*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
