@@ -1,0 +1,1 @@
+"""Capabilities for collecting facts about the computer."""
