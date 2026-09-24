@@ -1,4 +1,4 @@
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 
 
 MIGRATIONS: dict[int, tuple[str, ...]] = {
@@ -96,6 +96,28 @@ MIGRATIONS: dict[int, tuple[str, ...]] = {
         """
         CREATE INDEX idx_process_metrics_identity
         ON process_metrics (pid, create_time, snapshot_id)
+        """,
+    ),
+    4: (
+        """
+        CREATE TABLE state_snapshots (
+            id INTEGER PRIMARY KEY,
+
+            started_at TEXT NOT NULL,
+            finished_at TEXT NOT NULL,
+
+            system_metric_id INTEGER NOT NULL UNIQUE
+                REFERENCES system_metrics(id)
+                ON DELETE RESTRICT,
+
+            process_snapshot_id INTEGER NOT NULL UNIQUE
+                REFERENCES process_snapshots(id)
+                ON DELETE RESTRICT
+        )
+        """,
+        """
+        CREATE INDEX idx_state_snapshots_started_at
+        ON state_snapshots (started_at)
         """,
     ),
 }
