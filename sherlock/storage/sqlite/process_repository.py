@@ -21,55 +21,65 @@ class ProcessRepository:
     def save(self, snapshot: ProcessSnapshot) -> int:
         with self.database.connection() as connection:
             with connection:
-                cursor = connection.execute(
-                    """
-                    INSERT INTO process_snapshots (
-                        started_at,
-                        finished_at,
-                        skipped_count
-                    )
-                    VALUES (?, ?, ?)
-                    """,
-                    (
-                        to_utc_text(snapshot.started_at),
-                        to_utc_text(snapshot.finished_at),
-                        snapshot.skipped_count,
-                    ),
+                snapshot_id = self.insert(connection, snapshot)
+
+        return snapshot_id
+
+    def insert(
+        self,
+        connection: sqlite3.Connection,
+        snapshot: ProcessSnapshot,
+    ) -> int:
+ 
+        cursor = connection.execute(
+            """
+            INSERT INTO process_snapshots (
+                started_at,
+                finished_at,
+                skipped_count
+            )
+            VALUES (?, ?, ?)
+            """,
+            (
+                to_utc_text(snapshot.started_at),
+                to_utc_text(snapshot.finished_at),
+                snapshot.skipped_count,
+            ),
+        )
+
+        snapshot_id = cursor.lastrowid
+
+        if snapshot_id is None:
+            raise RuntimeError("Snapshot ID was not returned")
+
+        connection.executemany(
+            """
+            INSERT INTO process_metrics (
+                snapshot_id,
+                observed_at,
+                pid,
+                create_time,
+                name,
+                status,
+                memory_rss,
+                cpu_seconds
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                (
+                    snapshot_id,
+                    to_utc_text(metric.observed_at),
+                    metric.pid,
+                    metric.create_time,
+                    metric.name,
+                    metric.status,
+                    metric.memory_rss,
+                    metric.cpu_seconds,
                 )
-
-                snapshot_id = cursor.lastrowid
-
-                if snapshot_id is None:
-                    raise RuntimeError("Snapshot ID was not returned")
-
-                connection.executemany(
-                    """
-                    INSERT INTO process_metrics (
-                        snapshot_id,
-                        observed_at,
-                        pid,
-                        create_time,
-                        name,
-                        status,
-                        memory_rss,
-                        cpu_seconds
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
-                    [
-                        (
-                            snapshot_id,
-                            to_utc_text(metric.observed_at),
-                            metric.pid,
-                            metric.create_time,
-                            metric.name,
-                            metric.status,
-                            metric.memory_rss,
-                            metric.cpu_seconds,
-                        )
-                        for metric in snapshot.processes
-                    ],
-                )
+                for metric in snapshot.processes
+            ],
+        )
 
         return snapshot_id
 
@@ -78,7 +88,7 @@ class ProcessRepository:
         pid: int,
         limit: int = 20,
     ) -> list[sqlite3.Row]:
-
+ 
         if pid < 0:
             raise ValueError("pid must not be negative")
 
