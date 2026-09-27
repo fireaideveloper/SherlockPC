@@ -7,6 +7,9 @@ from .models import ProcessMetric, ProcessSnapshot
 
 class ProcessCollector:
 
+    def __init__(self, *, include_details: bool = True) -> None:
+        self.include_details = include_details
+
     def collect(self) -> ProcessSnapshot:
         started_at = datetime.now(timezone.utc)
 
@@ -15,7 +18,6 @@ class ProcessCollector:
 
         for pid in psutil.pids():
             try:
-                # A fresh object for this collection.
                 process = psutil.Process(pid)
 
                 create_time = process.create_time()
@@ -25,17 +27,13 @@ class ProcessCollector:
                     continue
 
                 info = process.as_dict(
-                    attrs=[
-                        "name",
-                        "status",
-                        "memory_info",
-                        "cpu_times",
-                    ],
+                    attrs=(
+                        ["name", "status", "memory_info", "cpu_times"]
+                        if self.include_details else ["memory_info"]
+                    ),
                     ad_value=None,
                 )
 
-                # Discard observations if the original process has
-                # disappeared or its PID has been reused.
                 if not process.is_running():
                     skipped_count += 1
                     continue
@@ -47,15 +45,15 @@ class ProcessCollector:
                 continue
 
             memory = info["memory_info"]
-            cpu = info["cpu_times"]
+            cpu = info.get("cpu_times")
 
             metrics.append(
                 ProcessMetric(
                     observed_at=observed_at,
                     pid=pid,
                     create_time=create_time,
-                    name=info["name"],
-                    status=info["status"],
+                    name=info.get("name"),
+                    status=info.get("status"),
                     memory_rss=(
                         memory.rss if memory is not None else None
                     ),
