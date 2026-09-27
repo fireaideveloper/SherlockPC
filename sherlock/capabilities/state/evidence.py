@@ -1,5 +1,3 @@
-"""Traceable observations, not causal diagnoses or calibrated probabilities."""
-
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Literal
@@ -33,9 +31,6 @@ class EvidenceReport:
     evidence: tuple[Evidence, ...]
     limitations: tuple[str, ...]
 
-
-# Absolute tolerances in percentage points, deliberately explicit heuristics.
-# These are initial engineering choices, not learned or validated thresholds.
 TOLERANCES = {"cpu_percent": 10.0, "memory_percent": 5.0, "swap_percent": 5.0}
 
 
