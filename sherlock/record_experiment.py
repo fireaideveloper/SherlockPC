@@ -12,6 +12,7 @@ from pathlib import Path
 import psutil
 
 from sherlock.capabilities.state.collector import StateCollector
+from sherlock.capabilities.processes.collector import ProcessCollector
 
 SCENARIOS = ('normal', 'heavy_normal', 'cpu_load', 'memory_growth', 'disk_io', 'mixed')
 FIELDS = (
@@ -29,7 +30,6 @@ def validate_alias(value):
 
 
 def sample_row(snapshot, run_id, index, elapsed, collection):
-    """Explicit allowlist: never serialize a snapshot wholesale."""
     system = snapshot.system
     rss = [p.memory_rss for p in snapshot.processes.processes if p.memory_rss is not None]
     return dict(zip(FIELDS, (
@@ -54,7 +54,9 @@ def record_experiment(*, output, scenario, machine_id, session_id,
         raise ValueError('interval must be finite and at least 2 seconds')
     if duration < interval:
         raise ValueError('duration must be at least interval')
-    collector = StateCollector() if collector is None else collector
+    injected_collector = collector is not None
+    collector = (StateCollector(process_collector=ProcessCollector(include_details=False))
+                 if collector is None else collector)
     run_id = uuid.uuid4().hex
     folder = Path(output) / run_id
     folder.mkdir(parents=True, exist_ok=False)
@@ -63,7 +65,8 @@ def record_experiment(*, output, scenario, machine_id, session_id,
     except PackageNotFoundError:
         package_version = 'source-tree'
     meta = {
-        'schema_version': 'sherlockbench-0.1', 'recorder_version': '1.0',
+        'schema_version': 'sherlockbench-0.1', 'recorder_version': '1.1',
+        'process_collection_mode': 'custom' if injected_collector else 'rss_only',
         'package_version': package_version, 'psutil_version': psutil.__version__,
         'run_id': run_id, 'machine_id': machine_id, 'session_id': session_id,
         'scenario': scenario, 'label_source': 'user_declared_whole_run',
@@ -100,7 +103,6 @@ def record_experiment(*, output, scenario, machine_id, session_id,
                 writer.writerow(sample_row(snapshot, run_id, count, before-start, after-before))
                 stream.flush()
                 count += 1
-                # Never catch up with bursts after a slow collection.
                 delay = min(max(0, interval-(after-before)), max(0, duration-(clock()-start)))
                 if delay:
                     sleep(delay)
