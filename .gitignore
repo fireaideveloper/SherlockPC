@@ -3,3 +3,10 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 data/
+.venv-build/
+.venv-build-auto/
+/build/
+/dist/
+/SherlockBenchCollector.spec
+/build.log
+/python-probe.log
