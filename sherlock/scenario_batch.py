@@ -41,7 +41,6 @@ def memory_worker(stop, ready, go, target_bytes, available_floor, active_seconds
     allocated = 0
     try:
         while not stop.is_set() and time.monotonic() - start < active_seconds + 30:
-            # Reach the requested size gradually over the first 80% of the active phase.
             fraction = min(1.0, (time.monotonic()-start) / (active_seconds*0.8))
             desired = int(target_bytes * fraction)
             if allocated < desired:
@@ -139,13 +138,17 @@ class Load:
 
 
 def record_run(folder, *, scenario, machine_id, session_id, repeat,
-               before, active, after, interval, workers, memory_mb, duty):
+               before, active, after, interval, workers, memory_mb, duty, cancel_event=None, on_progress=None):
+    def check_cancel():
+        if cancel_event is not None and cancel_event.is_set():
+            raise KeyboardInterrupt
+
     run_id = uuid.uuid4().hex
     output = folder/run_id
     output.mkdir()
     phases = [('baseline', before), ('active', active), ('recovery', after)]
     meta = {
-        'schema_version': 'sherlockbench-system-0.2', 'recorder_version': '2.0',
+        'schema_version': 'sherlockbench-system-0.2', 'recorder_version': '2.1',
         'run_id': run_id, 'machine_id': machine_id, 'session_id': session_id,
         'scenario': scenario, 'repeat_index': repeat, 'origin': 'real_measurement',
         'label_source': 'controlled_schedule' if scenario != 'normal' else 'no_injected_load',
@@ -181,6 +184,7 @@ def record_run(folder, *, scenario, machine_id, session_id, repeat,
             writer = csv.DictWriter(stream, fieldnames=FIELDS)
             writer.writeheader()
             for phase, duration in phases:
+                check_cancel()
                 if phase == 'active':
                     setup_start = time.monotonic()-start
                     load.start()
@@ -191,7 +195,10 @@ def record_run(folder, *, scenario, machine_id, session_id, repeat,
                     load.go.set()
                 meta['events'].append({'event': phase+'_start', 'elapsed_seconds': phase_start-start})
                 deadline = phase_start + duration
+                if on_progress:
+                    on_progress(phase=phase, sample_count=meta['sample_count'])
                 while time.monotonic() < deadline:
+                    check_cancel()
                     if phase == 'active':
                         load.check()
                     tick = time.monotonic()
@@ -209,7 +216,13 @@ def record_run(folder, *, scenario, machine_id, session_id, repeat,
                         memory.available, swap.percent, end-tick))))
                     stream.flush()
                     meta['sample_count'] += 1
-                    time.sleep(max(0, min(tick+interval, deadline)-time.monotonic()))
+                    if on_progress:
+                        on_progress(phase=phase, sample_count=meta['sample_count'])
+                    delay = max(0, min(tick+interval, deadline)-time.monotonic())
+                    if cancel_event is None:
+                        time.sleep(delay)
+                    elif cancel_event.wait(delay):
+                        raise KeyboardInterrupt
                 meta['events'].append({'event': phase+'_end', 'elapsed_seconds': time.monotonic()-start})
                 if phase == 'active':
                     load.check()
@@ -217,6 +230,7 @@ def record_run(folder, *, scenario, machine_id, session_id, repeat,
                     meta['events'].append({'event': 'load_stopped', 'elapsed_seconds': time.monotonic()-start})
                     if any(code != 0 for code in meta['worker_exit_codes']) or load.forced_terminations:
                         raise RuntimeError('Load worker required forced cleanup or failed')
+        check_cancel()
         meta['status'] = 'completed'
     except KeyboardInterrupt:
         meta['status'] = 'interrupted'
