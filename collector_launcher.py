@@ -1,4 +1,3 @@
-"""Entry point shared by source and the Windows frozen executable."""
 import multiprocessing
 
 if __name__ == '__main__':
