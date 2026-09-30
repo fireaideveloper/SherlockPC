@@ -1,4 +1,3 @@
-"""Bounded scan of an explicit folder. Original files are never modified."""
 import json
 import os
 import stat
@@ -18,18 +17,42 @@ def _linked(info) -> bool:
     return stat.S_ISLNK(info.st_mode) or bool(getattr(info, 'st_file_attributes', 0) & 1024)
 
 
-def _fingerprint(info):
-    return info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns
+def _fingerprint(info, *, include_ctime=True):
+    result = (
+        info.st_dev,
+        info.st_ino,
+        info.st_size,
+        info.st_mtime_ns,
+    )
+    if include_ctime:
+        result += (info.st_ctime_ns,)
+    return result
 
 
 def _read_text(path: Path, info, max_bytes: int) -> tuple[str | None, str]:
-    fd = os.open(path, os.O_RDONLY | getattr(os, 'O_BINARY', 0) | getattr(os, 'O_NOFOLLOW', 0))
+    flags = (
+        os.O_RDONLY
+        | getattr(os, 'O_BINARY', 0)
+        | getattr(os, 'O_NOFOLLOW', 0)
+    )
+    fd = os.open(path, flags)
+
     with os.fdopen(fd, 'rb') as stream:
-        if _fingerprint(os.fstat(stream.fileno())) != _fingerprint(info):
+        opened = os.fstat(stream.fileno())
+
+        include_ctime = os.name != 'nt'
+        if (
+            _fingerprint(opened, include_ctime=include_ctime)
+            != _fingerprint(info, include_ctime=include_ctime)
+        ):
             raise OSError('File changed before reading')
+
         raw = stream.read(max_bytes + 1)
-        if _fingerprint(os.fstat(stream.fileno())) != _fingerprint(info):
+
+        after = os.fstat(stream.fileno())
+        if _fingerprint(after) != _fingerprint(opened):
             raise OSError('File changed during reading')
+
     if len(raw) > max_bytes:
         return None, 'too_large'
     if b'\x00' in raw:
@@ -87,7 +110,6 @@ def index_folder(root: Path, database: Path, *, text: bool = False,
             excluded_paths.extend(Path(p) for p in policy['excludes'])
             extensions.update(policy['exclude_extensions'])
         excluded_paths = list(dict.fromkeys(excluded_paths))
-        # Apply privacy changes even when a subsequent scan is interrupted or incomplete.
         rows = connection.execute('SELECT * FROM indexed_files WHERE root=?', (str(root),)).fetchall()
         cached = {}
         for row in rows:
@@ -102,7 +124,6 @@ def index_folder(root: Path, database: Path, *, text: bool = False,
                     content_status=? WHERE root=? AND path=?''', (status, str(root), str(path)))
                 row = dict(row) | {'content': None, 'content_fold': None, 'content_status': status}
             cached[str(path)] = row
-        # Persist exclusions and an incomplete status before traversing.
         policy = json.dumps({'text': text, 'excludes': [str(p) for p in excluded_paths],
                              'exclude_extensions': sorted(extensions), 'max_files': max_files,
                              'max_bytes': max_bytes}, ensure_ascii=False)
@@ -130,7 +151,7 @@ def index_folder(root: Path, database: Path, *, text: bool = False,
                             skipped += 1
                             continue
                         try:
-                            info = entry.stat(follow_symlinks=False)
+                            info = os.stat(path, follow_symlinks=False)
                             if _linked(info):
                                 skipped += 1
                                 continue
