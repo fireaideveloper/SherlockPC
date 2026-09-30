@@ -1,4 +1,3 @@
-# Windows PowerShell 5.1 compatible. Invoked by BUILD_WINDOWS.cmd.
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
 $transcribing = $false
@@ -12,7 +11,6 @@ function Find-Python312 {
         (Join-Path $env:LOCALAPPDATA 'SherlockBenchBuild\Python312\python.exe'),
         (Join-Path $env:LOCALAPPDATA 'Programs\Python\Python312\python.exe')
     )
-    # Missing runtimes and obsolete launchers may write to stderr; these are probes.
     $ErrorActionPreference = 'Continue'
     foreach ($candidate in $candidates) {
         if (Test-Path -LiteralPath $candidate) {
@@ -31,7 +29,6 @@ function Find-Python312 {
 
 function Invoke-Checked {
     param([string]$Exe, [string[]]$Arguments)
-    # Native stderr is diagnostic output, not by itself a failing exit code.
     $ErrorActionPreference = 'Continue'
     & $Exe @Arguments
     if ($LASTEXITCODE -ne 0) { throw "Command failed (exit $LASTEXITCODE): $Exe" }
@@ -85,7 +82,6 @@ try {
     Write-Host "Using Python: $python"
     $stage = 'creating the build environment'
     Write-Host '[2/4] Creating the build environment...'
-    # Separate folder avoids a damaged environment left by the previous script.
     $venv = Join-Path $PSScriptRoot '.venv-build-auto'
     Invoke-Checked -Exe $python -Arguments @('-m', 'venv', $venv)
     $buildPython = Join-Path $venv 'Scripts\python.exe'
