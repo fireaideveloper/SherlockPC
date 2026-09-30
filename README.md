@@ -8,7 +8,7 @@
 
 [![Status](https://img.shields.io/badge/status-active%20development-orange)](https://github.com/fireaideveloper/SherlockPC)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/tests-103%20passed-brightgreen)](https://github.com/fireaideveloper/SherlockPC)
+[![Tests](https://img.shields.io/badge/tests-217%20passed-brightgreen)](https://github.com/fireaideveloper/SherlockPC)
 [![Platform](https://img.shields.io/badge/platform-Windows--first-0078D4?logo=windows&logoColor=white)](https://github.com/fireaideveloper/SherlockPC)
 [![Local First](https://img.shields.io/badge/architecture-local--first-success)](docs/architecture.md)
 [![Hugging Face](https://img.shields.io/badge/🤗%20Hugging%20Face-SherlockBench-FFD21E)](https://huggingface.co/datasets/fireaideveloper/SherlockBench)
@@ -76,14 +76,17 @@ flowchart LR
 - ✅ State Diff между сохранёнными состояниями;
 - ✅ controlled workload recorder и scenario batches;
 - ✅ SherlockBench MVP;
-- ✅ автоматические тесты — **103 passed** в текущем snapshot репозитория.
+- ✅ локальный индекс файлов: выбранные папки, исключения, метаданные и поиск по UTF-8 тексту;
+- ✅ автоматические тесты — **217 passed** (Linux, Python 3.12, шаг 1.10).
+- ✅ bounded Investigation Engine MVP: Case Report, trace и evidence references.
+- ✅ Investigator / Critic / Verifier MVP: до трёх ресурсных гипотез, альтернативы и проверка evidence; причинность не подтверждается.
 
 ### Следующий слой
 
-- 🚧 Investigation state machine;
-- 🚧 Investigator / Critic / Verifier;
+- 🚧 расширение Investigation Engine: гипотезы и проверка причин;
+- 🚧 проверка причин по динамике процессов и дополнительным измерениям;
 - 🚧 anomaly detection experiments на SherlockBench;
-- 🚧 file indexing и hybrid retrieval;
+- 🚧 извлечение PDF/DOCX и semantic/hybrid retrieval;
 - 🚧 desktop UI;
 - 🚧 локальная ML-модель для обнаружения подозрительных состояний.
 
@@ -284,11 +287,12 @@ ML            scikit-learn + time-series methods
 - [x] Process history
 - [x] SQLite event storage
 - [x] Behavioral baseline
+- [x] Anomaly Detection MVP — пороговый отчёт CPU/RAM/swap
 - [x] Evidence model
-- [ ] Investigation state machine
-- [ ] Investigator / Critic / Verifier
+- [x] Investigation state machine MVP — фиксированный проход по сохранённому состоянию
+- [x] Investigator / Critic / Verifier MVP — гипотезы по CPU/RAM/swap, критика и проверка сигналов
 - [x] State Diff
-- [ ] File indexing
+- [x] File indexing MVP — метаданные, опциональный UTF-8 текст и буквальный поиск
 - [x] SherlockBench MVP
 
 ### v0.2 — Remember
@@ -339,3 +343,34 @@ SherlockPC создаётся как research pet project на пересече�
 [Kaggle](https://www.kaggle.com/fireaideveloper)
 
 </div>
+
+### Шаг 1.7 — обнаружение аномалий
+
+Команда: `python -m sherlock.anomalies --state <ID>`.
+Отчёт различает отклонения, отсутствие отклонений и недостаточную историю.
+[Установка, правила, проверка и ограничения](docs/step-1.7-anomalies.md).
+
+### Шаг 1.8 — Investigation Engine MVP
+
+`python -m sherlock.investigate --state 42` формирует Case Report по сохранённому снимку: статус, отклонения, ссылки на evidence и trace. SQLite открывается read-only. Причины тормозов и процессы-виновники пока не определяются.
+
+[Файлы, установка, устройство и проверка](docs/step-1.8-investigation.md).
+
+### Шаг 1.9 — Investigator / Critic / Verifier MVP
+
+Та же команда `python -m sherlock.investigate --state 42` теперь выдаёт гипотезы, критику и вердикты. Относительные отклонения отделены от абсолютных сигналов нагрузки. Подтверждённый сигнал не означает установленную причину тормозов.
+
+[Установка, правила, статусы и ограничения](docs/step-1.9-reasoning.md).
+
+### Шаг 1.10 — File indexing MVP
+
+```powershell
+python -m sherlock.files index .\docs --text
+python -m sherlock.files search "baseline"
+```
+
+Индекс локальный: `data/files.db`. По умолчанию сохраняются только метаданные; `--text` разрешает содержимое небольших UTF-8 TXT/MD/RST/CSV/TSV. PDF/DOCX доступны по имени и пути. Исключения приватных путей сохраняются между сканированиями. Нет OCR, embeddings или семантического поиска.
+
+[Установка и ограничения](docs/step-1.10-file-indexing.md) · [Итог первого MVP v0.1](docs/v0.1-summary.md).
+
+Все десять пунктов исходного списка v0.1 реализованы в ограниченном MVP. Проверка причин, калибровка на реальных данных и полноценный desktop-интерфейс остаются дальнейшим развитием.
