@@ -343,34 +343,3 @@ SherlockPC создаётся как research pet project на пересече�
 [Kaggle](https://www.kaggle.com/fireaideveloper)
 
 </div>
-
-### Шаг 1.7 — обнаружение аномалий
-
-Команда: `python -m sherlock.anomalies --state <ID>`.
-Отчёт различает отклонения, отсутствие отклонений и недостаточную историю.
-[Установка, правила, проверка и ограничения](docs/step-1.7-anomalies.md).
-
-### Шаг 1.8 — Investigation Engine MVP
-
-`python -m sherlock.investigate --state 42` формирует Case Report по сохранённому снимку: статус, отклонения, ссылки на evidence и trace. SQLite открывается read-only. Причины тормозов и процессы-виновники пока не определяются.
-
-[Файлы, установка, устройство и проверка](docs/step-1.8-investigation.md).
-
-### Шаг 1.9 — Investigator / Critic / Verifier MVP
-
-Та же команда `python -m sherlock.investigate --state 42` теперь выдаёт гипотезы, критику и вердикты. Относительные отклонения отделены от абсолютных сигналов нагрузки. Подтверждённый сигнал не означает установленную причину тормозов.
-
-[Установка, правила, статусы и ограничения](docs/step-1.9-reasoning.md).
-
-### Шаг 1.10 — File indexing MVP
-
-```powershell
-python -m sherlock.files index .\docs --text
-python -m sherlock.files search "baseline"
-```
-
-Индекс локальный: `data/files.db`. По умолчанию сохраняются только метаданные; `--text` разрешает содержимое небольших UTF-8 TXT/MD/RST/CSV/TSV. PDF/DOCX доступны по имени и пути. Исключения приватных путей сохраняются между сканированиями. Нет OCR, embeddings или семантического поиска.
-
-[Установка и ограничения](docs/step-1.10-file-indexing.md) · [Итог первого MVP v0.1](docs/v0.1-summary.md).
-
-Все десять пунктов исходного списка v0.1 реализованы в ограниченном MVP. Проверка причин, калибровка на реальных данных и полноценный desktop-интерфейс остаются дальнейшим развитием.
