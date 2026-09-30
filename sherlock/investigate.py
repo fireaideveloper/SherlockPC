@@ -1,5 +1,3 @@
-"""Run a bounded investigation of one stored state snapshot."""
-
 import argparse
 import json
 from dataclasses import asdict
