@@ -1,4 +1,3 @@
-"""Index an explicit folder and search its local file index."""
 import argparse
 import json
 import sqlite3
