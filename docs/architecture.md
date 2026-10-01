@@ -385,3 +385,25 @@ Synthetic / controlled scenario
 7. Сырые capability calls по возможности детерминированы.
 8. AI reasoning отделён от policy enforcement.
 9. Local mode — основной режим проекта.
+
+## 13. Desktop Alpha boundary
+
+Первый desktop-слой не переносит reasoning во frontend и не даёт UI произвольный доступ к Python или shell.
+
+```text
+React / TypeScript UI
+        ↓ Tauri invoke
+fixed Rust command: backend_call
+        ↓ JSON stdin/stdout
+Python desktop bridge
+        ↓ allow-listed operations
+DesktopService
+        ├── StateCollector
+        ├── SQLite repositories
+        └── bounded Investigation Engine
+```
+
+На этапе Alpha разрешены только фиксированные backend actions: `ping`, `overview`, `capture_state`, `recent_states`, `investigate`. Текст диагностического вопроса пока не является командой для LLM и не преобразуется в shell-вызовы.
+
+Для development Tauri запускает локальный Python из репозитория. Release packaging должен заменить это на bundled Python sidecar, чтобы конечному пользователю не требовалась отдельная установка Python.
+
