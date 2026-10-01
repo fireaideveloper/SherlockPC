@@ -10,3 +10,6 @@ data/
 /SherlockBenchCollector.spec
 /build.log
 /python-probe.log
+desktop/node_modules/
+desktop/dist/
+desktop/src-tauri/target/
