@@ -1,17 +1,16 @@
-# SherlockPC Desktop Alpha
+# SherlockPC Desktop Alpha — standalone sidecar build
 
-Desktop Alpha is the first real UI layer on top of the existing deterministic SherlockPC core.
-It is intentionally small: **Diagnose only**, no LLM router, no actions and no unrestricted shell execution.
+The desktop shell now runs the existing deterministic SherlockPC core through a **bundled Python sidecar** instead of calling a system `python.exe`.
 
-## What is connected already
+## Runtime architecture
 
 ```text
-Tauri 2 window
+SherlockPC.exe (Tauri 2)
     ↓ invoke("backend_call")
 Rust allow-listed command
-    ↓ JSON via stdin/stdout
-python -m sherlock.desktop_bridge
-    ↓
+    ↓ tauri-plugin-shell sidecar
+sherlock-backend-<target-triple>.exe
+    ↓ JSON argument / JSON stdout
 DesktopService
     ├── StateCollector
     ├── StateRepository / SQLite
@@ -21,59 +20,57 @@ DesktopService
           └── Verifier
 ```
 
-The UI displays real values from the current machine:
+The sidecar is built from `sherlock/desktop_bridge.py` with PyInstaller `--onefile`. Tauri bundles it through `bundle.externalBin`.
 
-- CPU usage;
-- RAM usage and available memory;
-- swap usage;
-- process count;
-- top processes by RSS memory;
-- recent stored state snapshots;
-- investigation status, conclusion, hypotheses, evidence references and trace.
+## Data location
 
-## Important limitations
+The packaged app stores its database in a writable per-user location instead of beside the installed EXE:
 
-- The text question is **not interpreted by an LLM yet**. Desktop Alpha attaches it to the current Diagnose flow.
-- The existing Investigation Engine currently reasons about CPU/RAM/swap resource signals. It does not establish a root cause.
-- On a fresh database, the engine will normally return `INSUFFICIENT_EVIDENCE` until enough historical snapshots exist.
-- Disk/GPU health cards are deliberately not shown because the current state model does not collect those health metrics.
-- The current Tauri Rust command launches the repository Python backend during development. A release EXE should replace that development dependency with a bundled PyInstaller sidecar.
+```text
+%LOCALAPPDATA%\SherlockPC\data\sherlock.db
+```
 
-## Run on Windows
+`SHERLOCK_DB_PATH` can still override the location for development/tests.
 
-Requirements for development:
+## Development
 
-1. Python 3.11+.
-2. Node.js/npm.
-3. Rust/Cargo (rustup).
-4. Microsoft C++ Build Tools / WebView2 requirements used by Tauri on Windows.
-
-From the repository root:
+Run from the repository root:
 
 ```bat
 RUN_DESKTOP_DEV.cmd
 ```
 
-The launcher installs the Python package editable, installs frontend dependencies if needed and starts `tauri dev`.
+The launcher:
 
-Manual equivalent:
+1. checks Python, Node/npm and Rust/Cargo;
+2. installs the `desktop-build` Python extra (PyInstaller);
+3. builds/refreshes the target-specific backend sidecar;
+4. installs frontend dependencies when required;
+5. runs `tauri dev`.
 
-```powershell
-python -m pip install -e .
-cd desktop
-npm install
-npm run tauri dev
+Python is still required on a developer machine to **build** the sidecar, but the Tauri UI itself talks to the sidecar rather than `python.exe`.
+
+## Windows release build
+
+Run:
+
+```bat
+BUILD_DESKTOP_WINDOWS.cmd
 ```
 
-## Backend bridge smoke test
+Expected outputs:
 
-Without starting Tauri:
-
-```powershell
-'{"action":"ping"}' | python -m sherlock.desktop_bridge
-'{"action":"overview"}' | python -m sherlock.desktop_bridge
+```text
+desktop\src-tauri\target\release\sherlockpc-desktop.exe
+desktop\src-tauri\target\release\bundle\nsis\*.exe
 ```
 
-## Next packaging step
+The NSIS setup contains both the Tauri application and the packaged Python backend. A target Windows user does **not** need Python, Node.js/npm, or Rust installed.
 
-For a distributable `SherlockPC.exe`, package `sherlock.desktop_bridge` and the Python core as a PyInstaller executable and register it in Tauri as an `externalBin` sidecar. That removes the requirement for the end user to have Python installed.
+## Security boundary
+
+The React frontend still has no generic shell endpoint. It invokes one Rust command, and the Python bridge still accepts only the explicit operations `ping`, `overview`, `capture_state`, `recent_states`, and `investigate`.
+
+## Current limitation
+
+The PyInstaller backend is a one-shot sidecar: one process is started for each backend request. This keeps the Alpha architecture simple and distributable. A later optimization can turn it into a long-running local worker to reduce cold-start overhead while preserving the same allow-listed command boundary.
