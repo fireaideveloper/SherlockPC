@@ -12,6 +12,9 @@ dependencies = [
 dev = [
     "pytest>=8.0"
 ]
+desktop-build = [
+    "pyinstaller>=6.15,<7"
+]
 
 [build-system]
 requires = ["setuptools>=69"]

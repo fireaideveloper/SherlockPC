@@ -68,7 +68,7 @@ flowchart LR
 
 ### Реализовано
 
-- ✅ Desktop Alpha: Tauri 2 + React shell, live System Health и реальный bounded investigation через Python bridge;
+- ✅ Desktop Alpha: Tauri 2 + React shell, live System Health и реальный bounded investigation через bundled Python sidecar;
 - ✅ сбор системной telemetry;
 - ✅ snapshots процессов и process history;
 - ✅ SQLite storage layer;
@@ -78,7 +78,7 @@ flowchart LR
 - ✅ controlled workload recorder и scenario batches;
 - ✅ SherlockBench MVP;
 - ✅ локальный индекс файлов: выбранные папки, исключения, метаданные и поиск по UTF-8 тексту;
-- ✅ автоматические тесты — **222 passed** (полный Python test suite после Desktop Alpha).
+- ✅ автоматические тесты — **225 passed** (полный Python test suite после standalone sidecar integration).
 - ✅ bounded Investigation Engine MVP: Case Report, trace и evidence references.
 - ✅ Investigator / Critic / Verifier MVP: до трёх ресурсных гипотез, альтернативы и проверка evidence; причинность не подтверждается.
 
@@ -89,7 +89,6 @@ flowchart LR
 - 🚧 anomaly detection experiments на SherlockBench;
 - 🚧 извлечение PDF/DOCX и semantic/hybrid retrieval;
 - 🚧 развитие desktop UI: router для Search / Recall / Compare, timeline и richer evidence views;
-- 🚧 release packaging desktop-приложения с bundled Python sidecar;
 - 🚧 локальная ML-модель для обнаружения подозрительных состояний.
 
 ---
@@ -272,7 +271,7 @@ Testing       pytest
 
 ```text
 Desktop       Tauri 2 + React + TypeScript (Alpha)
-Bridge        narrow Rust invoke → Python JSON bridge
+Bridge        narrow Rust invoke → bundled PyInstaller sidecar
 ```
 
 ### Планируется
@@ -303,7 +302,7 @@ ML            scikit-learn + time-series methods
 - [x] File indexing MVP — метаданные, опциональный UTF-8 текст и буквальный поиск
 - [x] SherlockBench MVP
 - [x] Desktop Alpha — Tauri/React shell + System Health + bounded Diagnose view
-- [ ] Desktop release packaging — bundled Python sidecar + installer
+- [x] Desktop release packaging — bundled PyInstaller sidecar + NSIS installer build
 
 ### v0.2 — Remember
 
@@ -326,7 +325,7 @@ ML            scikit-learn + time-series methods
 
 - **[Architecture](docs/architecture.md)** — компоненты, data flow, evidence model и Investigation Engine.
 - **[Threat Model](docs/threat-model.md)** — privacy zones, trust boundaries, prompt injection и safe actions.
-- **[Desktop Alpha](docs/desktop.md)** — Tauri/React UI, Python bridge, запуск и ограничения текущего слоя.
+- **[Desktop Alpha](docs/desktop.md)** — Tauri/React UI, bundled Python sidecar, standalone Windows build и ограничения текущего слоя.
 - **[Demo](docs/assets/demo.gif)** — UI-концепт SherlockPC.
 - **[SherlockBench on Hugging Face](https://huggingface.co/datasets/fireaideveloper/SherlockBench)** — опубликованный dataset.
 - **[Kaggle profile](https://www.kaggle.com/fireaideveloper)** — dataset, EDA и эксперименты.
