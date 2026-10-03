@@ -7,7 +7,7 @@ from sherlock.capabilities.processes.models import ProcessMetric, ProcessSnapsho
 from sherlock.capabilities.state.models import StateSnapshot
 from sherlock.capabilities.telemetry.models import SystemMetric
 from sherlock.desktop.service import DesktopService
-from sherlock.desktop_bridge import handle_request
+from sherlock.desktop_bridge import _request_from_args, default_database_path, handle_request
 
 
 NOW = datetime(2026, 10, 1, 12, 0, tzinfo=timezone.utc)
@@ -70,7 +70,7 @@ def test_investigate_current_is_bounded_and_honest_with_no_history(tmp_path):
 def test_bridge_allows_only_named_actions(tmp_path):
     service = make_service(tmp_path)
     ping = handle_request({"action": "ping"}, service=service)
-    assert ping["bridge"] == "desktop-bridge-v1"
+    assert ping["bridge"] == "desktop-bridge-v2"
 
     with pytest.raises(ValueError, match="unsupported desktop action"):
         handle_request({"action": "run_shell"}, service=service)
@@ -90,3 +90,20 @@ def test_bridge_investigation_payload_is_json_serializable(tmp_path):
     )
     json.dumps(payload, allow_nan=False, default=lambda value: value.isoformat())
     assert payload["report"]["status"] == "INSUFFICIENT_EVIDENCE"
+
+
+
+def test_bridge_accepts_sidecar_request_json_argument():
+    payload = _request_from_args(["--request-json", '{"action":"ping"}'])
+    assert payload == {"action": "ping"}
+
+
+def test_bridge_rejects_unknown_sidecar_arguments():
+    with pytest.raises(ValueError, match="unsupported arguments"):
+        _request_from_args(["--not-allowed", "value"])
+
+
+def test_default_database_path_uses_override(monkeypatch, tmp_path):
+    expected = tmp_path / "custom.db"
+    monkeypatch.setenv("SHERLOCK_DB_PATH", str(expected))
+    assert default_database_path() == expected
