@@ -1,10 +1,7 @@
-"""Generate bounded candidates, not diagnoses or process accusations."""
 from sherlock.capabilities.state.evidence import EvidenceReport
 from .reasoning_models import Hypothesis
 
 
-# Absolute thresholds are deliberately separate from relative anomaly rules.
-# They are heuristics to be calibrated, not probabilities of a fault.
 RULES = {
     'cpu_contention': ('cpu_percent', 85.0,
         'High CPU utilization may contribute to reduced responsiveness.'),
