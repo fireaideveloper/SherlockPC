@@ -10,7 +10,6 @@ from sherlock.storage.sqlite.database import Database
 class _ReadOnlyDatabase(Database):
     @contextmanager
     def connection(self) -> Iterator[sqlite3.Connection]:
-        # mode=ro also prevents silently creating an absent database.
         connection = sqlite3.connect(
             self.path.resolve().as_uri() + "?mode=ro", uri=True, timeout=5.0,
         )
