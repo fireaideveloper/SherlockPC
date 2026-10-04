@@ -1,4 +1,3 @@
-"""Check provenance and rule support; never promote a signal to a proven cause."""
 from sherlock.capabilities.state.evidence import EvidenceReport, build_evidence
 from .investigator import RULES
 from .critic import critique_hypotheses
@@ -6,9 +5,7 @@ from .reasoning_models import Critique, Hypothesis, Verdict
 
 
 def verify_hypotheses(hypotheses: tuple[Hypothesis, ...], critiques: tuple[Critique, ...],
-                      report: EvidenceReport) -> tuple[Verdict, ...]:
-    # Rebuild canonical evidence from baseline to reject altered values, statements,
-    # IDs and source lists. This is a consistency check, not independent measurement.
+                      report: EvidenceReport) -> tuple[Verdict, ...]:\
     canonical_report = build_evidence(report.baseline)
     canonical = {e.evidence_id: e for e in canonical_report.evidence}
     actual = {e.evidence_id: e for e in report.evidence}
