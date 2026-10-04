@@ -6,17 +6,12 @@ from .models import SystemMetric
 
 
 class TelemetryCollector:
-    """Read system metrics without writing to storage."""
-
     def collect(self) -> SystemMetric:
-        # A blocking measurement avoids the meaningless first
-        # non-blocking CPU reading.
         cpu_percent = psutil.cpu_percent(interval=1.0)
 
         memory = psutil.virtual_memory()
         swap = psutil.swap_memory()
 
-        # Optional sources may be unavailable on some systems.
         try:
             disk = psutil.disk_io_counters()
         except (OSError, psutil.Error):
