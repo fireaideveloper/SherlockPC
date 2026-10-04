@@ -4,7 +4,6 @@ from datetime import datetime
 
 @dataclass(frozen=True, slots=True)
 class SystemMetric:
-    """One system measurement. Memory and I/O values are in bytes."""
 
     timestamp: datetime
 
