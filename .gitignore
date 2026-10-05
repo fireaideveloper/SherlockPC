@@ -2,9 +2,12 @@
 __pycache__/
 .pytest_cache/
 *.egg-info/
-data/
 .venv-build/
 .venv-build-auto/
+data/
+*.db
+*.db-shm
+*.db-wal
 /build/
 /dist/
 /SherlockBenchCollector.spec
@@ -15,3 +18,11 @@ desktop/dist/
 desktop/src-tauri/target/
 desktop/src-tauri/binaries/*
 !desktop/src-tauri/binaries/.gitkeep
+/release/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.venv-desktop-build/
+/release.previous/
+/release-stage-*/
