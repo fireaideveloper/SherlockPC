@@ -1,7 +1,7 @@
 [project]
 name = "sherlockpc"
-version = "0.1.0"
-description = "Evidence-driven local investigation system for personal computers"
+version = "0.1"
+description = "Evidence-driven local PC investigator"
 requires-python = ">=3.11"
 
 dependencies = [
