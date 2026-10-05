@@ -1,355 +1,141 @@
-<div align="center">
+# SherlockPC
 
-# 🕵️ SherlockPC
+### Понять нагрузку. Проверить факты. Сохранить историю.
 
-### Компьютер, который наконец может объяснить, что с ним произошло.
+Локальное Windows-приложение для наблюдения за ПК и проверки отклонений CPU, памяти и подкачки.
 
-**Local-first, evidence-driven система расследований для персонального компьютера.**
+**v0.1 · Release candidate · Windows x64 · 12 языков**
 
-[![Status](https://img.shields.io/badge/status-active%20development-orange)](https://github.com/fireaideveloper/SherlockPC)
-[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/tests-217%20passed-brightgreen)](https://github.com/fireaideveloper/SherlockPC)
-[![Platform](https://img.shields.io/badge/platform-Windows--first-0078D4?logo=windows&logoColor=white)](https://github.com/fireaideveloper/SherlockPC)
-[![Local First](https://img.shields.io/badge/architecture-local--first-success)](docs/architecture.md)
-[![Hugging Face](https://img.shields.io/badge/🤗%20Hugging%20Face-SherlockBench-FFD21E)](https://huggingface.co/datasets/fireaideveloper/SherlockBench)
-[![Kaggle](https://img.shields.io/badge/Kaggle-SherlockBench-20BEFF?logo=kaggle&logoColor=white)](https://www.kaggle.com/fireaideveloper)
 
-> **Ask what happened. Sherlock investigates.**
 
-[GitHub](https://github.com/fireaideveloper/SherlockPC) ·
-[Hugging Face](https://huggingface.co/datasets/fireaideveloper/SherlockBench) ·
-[Kaggle](https://www.kaggle.com/fireaideveloper)
+## Что делает приложение
 
-</div>
+SherlockPC автоматически снимает состояние системы примерно каждые 10 секунд, сохраняет его в SQLite и сравнивает новые измерения с предыдущими. Отчёт показывает наблюдения, ограниченные гипотезы, проверку доказательств и границы выводов.
 
----
-
-## 🎬 Demo
-
-<div align="center">
-<img src="docs/assets/demo.gif" alt="SherlockPC demo" width="900">
-</div>
-
-> Демо выше — UI-концепт целевого desktop-интерфейса. Текущая версия проекта сосредоточена на telemetry, evidence layer, state comparison и SherlockBench.
-
----
-
-## ⚡ SherlockPC за 20 секунд
-
-SherlockPC — это не ещё один чат поверх LLM. Пользователь описывает проблему обычным языком, а система должна сама определить, **какие данные проверить, какие гипотезы сравнить и достаточно ли доказательств для вывода**.
-
-| Режим | Пример запроса |
+| Раздел | Для чего нужен |
 |---|---|
-| 🔍 **Diagnose** | `Почему компьютер начал тормозить?` |
-| 📁 **Search** | `Найди презентацию про ML, которую я редактировал летом.` |
-| 🧠 **Recall** | `На чём я остановился вчера в SherlockPC?` |
-| 🔄 **Compare** | `Что изменилось с тех пор, когда всё работало нормально?` |
+| **Обзор** | CPU, память, подкачка, число процессов, последние замеры и готовность истории |
+| **Расследование** | Итог, наблюдения, ход проверки, ограничения и ссылки на факты |
+| **История** | Все сохранённые замеры с постраничным просмотром, путь к базе и очистка с подтверждением |
+| **Настройки** | Автозапуск Windows, светлая / тёмная / системная тема и управление историей |
 
-```mermaid
-flowchart LR
-    Q["❓ User question"] --> R["🧭 Intent / Plan"]
-    R --> T["🛠 System tools"]
-    T --> E["🔎 Evidence"]
-    E --> H["💡 Hypotheses"]
-    H --> C["🧪 Critic"]
-    C --> V["✅ Verifier"]
-    V --> A["📁 Evidence-backed answer"]
-```
+Кнопка **«Снять замер»** создаёт новое измерение. **«Проверить»** создаёт отчёт, который остаётся неизменным до следующего расследования. Закрытие окна оставляет сбор в трее; пункт **«Выход — остановить сбор»** завершает программу.
 
-> ### Нет доказательств → нет фактического утверждения.
->
-> LLM может предложить гипотезу, но SherlockPC не должен показывать её как установленную причину, пока она не подтверждена доступными данными.
+## Что нового в v0.1
 
----
+- Исправлен запуск с лишней консолью: Windows-приложение собирается с GUI-подсистемой. Крестик скрывает окно в трей; сбор истории продолжается. Завершение — через меню трея.
+- Публичная версия — **0.1**; технические версии Cargo/npm/Tauri — **0.1.0**.
 
-## 🚧 Текущее состояние
+- Исправлена передача Unicode между Windows backend и UI: кириллица, ¿, акценты и иероглифы возвращаются в поле вопроса без потерь.
+- Нижняя кнопка папки истории теперь всегда доступна отдельно от просмотра ошибки; открывает реальную папку базы.
+- Нумерация упрощена до `#67`; арабский интерфейс поддерживает RTL.
+- Японские, корейские, арабские и деванагари-шрифты включаются в сборку для работы офлайн.
 
-Проект находится в активной разработке. Уже реализованы deterministic core, bounded Investigation Engine и первый Desktop Alpha, который показывает реальные локальные данные и evidence trace.
+- Двенадцать языков с переключением без перезапуска: **English, Русский, Español, Português (Brasil), 简体中文, Français, Italiano, Deutsch, 日本語, 한국어, العربية, हिन्दी**. Китайский — упрощённый, португальский — бразильский.
+- Переведены интерфейс, диалоги, стандартные диагностические выводы и меню трея. Даты, числа и длительности учитывают язык.
+- Выбранные язык и тема сохраняются на этом ПК; первый язык определяется по системе, с английским как запасным.
+- Единые визуальные стили, контрастные карточки метрик и индикаторы загрузки ресурсов.
+- Готовность базы сравнения рассчитывается по фактическим требованиям к числу замеров и периоду наблюдения; это **не оценка здоровья ПК**.
+- Тренд CPU/RAM с временными отметками и различимыми линиями; скрывается в компактном окне, чтобы оставить место результату.
+- Поддержка клавиатуры, видимый фокус, системное ограничение анимации, понятные пустые состояния и ошибки.
 
-### Реализовано
+## Быстрый старт
 
-- ✅ Desktop Alpha: Tauri 2 + React shell, live System Health и реальный bounded investigation через bundled Python sidecar;
-- ✅ сбор системной telemetry;
-- ✅ snapshots процессов и process history;
-- ✅ SQLite storage layer;
-- ✅ behavioral baseline по историческим наблюдениям;
-- ✅ structured evidence model;
-- ✅ State Diff между сохранёнными состояниями;
-- ✅ controlled workload recorder и scenario batches;
-- ✅ SherlockBench MVP;
-- ✅ локальный индекс файлов: выбранные папки, исключения, метаданные и поиск по UTF-8 тексту;
-- ✅ автоматические тесты — **225 passed** (полный Python test suite после standalone sidecar integration).
-- ✅ bounded Investigation Engine MVP: Case Report, trace и evidence references.
-- ✅ Investigator / Critic / Verifier MVP: до трёх ресурсных гипотез, альтернативы и проверка evidence; причинность не подтверждается.
+Для конечного пользователя нужен собранный **`SherlockPC-v0.1-Setup.exe`**. Исходный ZIP не содержит нового EXE: его нужно собрать на Windows. Python, Node.js и Rust на компьютере пользователя установленной программы не требуются.
 
-### Следующий слой
+1. Установите приложение и откройте SherlockPC.
+2. Выберите язык в правом верхнем углу.
+3. Дождитесь первых замеров. Для сравнения с историей нужны достаточное число наблюдений **и** достаточный период; точные требования видны в индикаторе.
+4. Нажмите «Проверить CPU» или «Проверить память», затем «Проверить».
+5. Откройте «Расследование», чтобы посмотреть факты и ограничения.
 
-- 🚧 расширение Investigation Engine: гипотезы и проверка причин;
-- 🚧 проверка причин по динамике процессов и дополнительным измерениям;
-- 🚧 anomaly detection experiments на SherlockBench;
-- 🚧 извлечение PDF/DOCX и semantic/hybrid retrieval;
-- 🚧 развитие desktop UI: router для Search / Recall / Compare, timeline и richer evidence views;
-- 🚧 локальная ML-модель для обнаружения подозрительных состояний.
+## Честные границы версии
 
----
+- Вопрос — **подпись к фиксированной проверке CPU/RAM/swap**, а не произвольная команда для LLM. Кнопки CPU и памяти подставляют вопрос, но не отключают остальные правила проверки.
+- Сигнал нагрузки не доказывает причину торможения, неисправность или утечку памяти. Отсутствие отклонений не подтверждает здоровье всего ПК.
+- Правила эвристические; проценты вероятности неисправности не вычисляются.
+- Search / Recall / Actions пока не доступны в desktop UI. В Python-коде уже есть State Diff, индексация файлов и SherlockBench — это отдельные инструменты, не кнопки приложения.
+- Диагностические идентификаторы, имена процессов, пути и исходные технические ошибки сохраняются без перевода. Неизвестные будущие сообщения выводятся как есть.
+- Полная Windows-сборка, установщик, автозапуск и трей требуют проверки на Windows перед публикацией.
 
-## 🔬 Как должно выглядеть расследование
+## Данные и приватность
+
+Телеметрия и диагностика выполняются локально. База по умолчанию:
 
 ```text
-CASE #184
-────────────────────────────────
-
-Question
-Почему компьютер начал тормозить около 15:00?
-
-Main hypothesis
-Docker Desktop вызвал давление на память.
-
-Confidence
-HIGH
-
-Timeline
-14:31:48   Docker Desktop started
-14:32:11   RAM usage began increasing
-14:34:03   Memory anomaly detected
-14:36:17   Swap activity ×8.1
-
-Evidence
-E-1042   Docker memory +5.8 GB
-E-1048   RAM 61% → 91%
-E-1051   Swap activity +710%
-
-Alternatives
-Chrome memory leak  → REJECTED
-Disk bottleneck     → UNLIKELY
-
-Suggested action
-Stop Docker Desktop
-
-Risk
-Running containers will stop.
+%LOCALAPPDATA%\SherlockPC\data\sherlock.db
 ```
 
-Это **целевой формат Investigation Engine**, а не утверждение о том, что весь pipeline уже реализован в текущей версии.
+Точный путь виден в «Истории» и «Настройках»; **«Открыть папку»** ведёт к нему. Для резервной копии сначала завершите SherlockPC через трей, затем скопируйте папку данных. Очистка истории необратима и требует подтверждения; после неё сбор начинает новую историю. При сбросе удаляются относящиеся к замерам системные и процессные измерения.
 
----
+Сведения о процессах могут содержать личную информацию. Не публикуйте свою базу вместе с релизом.
 
-## 🧩 Архитектура
+## Разработка и сборка
 
-![Архитектура SherlockPC](docs/assets/architecture.svg)
+**Windows:** Python 3.11+ (рекомендуется 3.12), Node.js 22.12+ или 24 LTS, Rust stable с MSVC toolchain, Visual Studio Build Tools с C++ и Windows SDK, WebView2 Runtime.
 
-SherlockPC разделяет deterministic system capabilities и AI reasoning:
-
-- **Intent Router** — определяет тип запроса и необходимые capabilities;
-- **Orchestrator / Planner** — решает, какие данные нужно получить;
-- **System & Process capabilities** — собирают реальные наблюдения;
-- **Investigator** — строит гипотезы на основе evidence;
-- **Critic** — ищет альтернативные объяснения и контрпримеры;
-- **Verifier** — проверяет достаточность доказательств и groundedness ответа.
-
-Подробно: **[docs/architecture.md](docs/architecture.md)**
-
----
-
-## 🔐 Privacy by Architecture
-
-![Privacy flow](docs/assets/privacy-flow.svg)
-
-> **Исключённые данные не должны попадать в память Sherlock.**
-
-Основные принципы:
-
-- local-first обработка;
-- минимизация собираемых данных;
-- privacy zones для файлов и приложений;
-- policy layer перед потенциально опасными действиями;
-- отсутствие unrestricted shell-доступа у LLM;
-- cloud intelligence — только как отдельный opt-in режим в будущем.
-
-Подробно: **[docs/threat-model.md](docs/threat-model.md)**
-
----
-
-## 📊 SherlockBench
-
-**SherlockBench** — собственный датасет и экспериментальная среда SherlockPC для controlled Windows workloads и будущей оценки anomaly detection / diagnosis pipeline.
-
-### Release v0.3.0
-
-| Параметр | Значение |
-|---|---:|
-| Primary observations | **960** |
-| Accepted experiments | **16** |
-| Duration per experiment | **5 min** |
-| Windows PCs | **2** |
-| Scenarios | **4** |
-
-Сценарии:
-
-- `normal`
-- `cpu_load`
-- `memory_growth`
-- `mixed`
-
-Каждый основной эксперимент содержит фазы **baseline → active → recovery**. Реальные измерения сохраняются без искусственного дополнения пропущенных строк.
-
-### Где опубликован
-
-- 🤗 **Hugging Face Dataset:** [fireaideveloper/SherlockBench](https://huggingface.co/datasets/fireaideveloper/SherlockBench)
-- 📊 **Kaggle:** [fireaideveloper](https://www.kaggle.com/fireaideveloper)
-- 💻 **Source / Collector:** этот репозиторий
-
-```mermaid
-flowchart LR
-    PC1["💻 Windows PC #1"] --> C["SherlockPC Collector"]
-    PC2["💻 Windows PC #2"] --> C
-    C --> RAW["Raw runs + metadata"]
-    RAW --> QB["Quality checks"]
-    QB --> SB["📊 SherlockBench"]
-    SB --> K["Kaggle\nEDA / experiments"]
-    SB --> HF["Hugging Face\nDataset / future models"]
-    SB --> ML["Future Sherlock Detector"]
+```bat
+RUN_DESKTOP_DEV.cmd
 ```
 
-### Исследовательское направление
+Полная проверка, сборка sidecar, desktop и NSIS-установщика:
 
-По мере роста датасета планируется сравнивать:
+```bat
+BUILD_DESKTOP_WINDOWS.cmd
+```
 
-- rolling statistics / z-score;
-- Isolation Forest;
-- Local Outlier Factor;
-- change-point detection;
-- supervised workload / anomaly classifiers;
-- single-agent и multi-agent diagnosis pipelines.
+Результат успешной сборки:
 
-Будущие метрики:
+```text
+release/
+  SherlockPC-v0.1-Setup.exe
+  SHA256SUMS.txt
+  RELEASE_NOTES.md
+```
 
-- Top-1 root-cause accuracy;
-- Top-3 root-cause recall;
-- False Alarm Rate;
-- Detection Latency;
-- Unsupported Claim Rate;
-- Alternative Coverage;
-- Tool Calls;
-- Token Usage.
+Обычный `sherlockpc.exe` находится в `desktop/src-tauri/target/release/`. Не раздавайте его отдельно от backend; для пользователей предназначен установщик.
 
-Исследовательский вопрос:
+### Проверки исходников
 
-> **Повышает ли evidence-based multi-agent verification надёжность диагностики настолько, чтобы оправдать дополнительную вычислительную стоимость?**
+```bash
+python -m pip install -e ".[dev]"
+python -m pytest -q
+cd desktop
+npm ci
+npm run check
+npm test
+npm run build
+npx playwright install chromium
+npm run test:ui
+```
 
----
+Регрессионные тесты запускают реальный Python bridge с CP1251, CP1252 и ASCII, проверяя сохранность всех 12 языков.
 
-## 🧠 Планируемый intelligence layer
+UI-тесты используют фикстуру через имитацию IPC и не изменяют настоящую историю ПК. Они проверяют раскладку, 12 языков, темы, сохранение настроек, смену состояний и подтверждение удаления. Native-функции тестируются отдельно в Windows smoke-check.
 
-SherlockPC не должен постоянно отправлять всю telemetry в большую LLM. Планируемая схема — дешёвый локальный detection layer + более глубокое расследование только при необходимости.
+## Стек и устройство
+
+| Слой | Технологии и ответственность |
+|---|---|
+| UI | React 19, TypeScript, Vite; JSON-каталоги переводов, CSS-токены |
+| Desktop | Tauri 2 / Rust: трей, автозапуск, один экземпляр, запуск sidecar |
+| Core | Python, psutil: сбор измерений и bounded investigation |
+| Хранение | SQLite, история состояний и процессов, evidence IDs |
+| Сборка | PyInstaller для sidecar, NSIS для установки |
 
 ```mermaid
 flowchart TD
-    TM["Telemetry + process history"] --> D["Local anomaly detector"]
-    D -->|Normal| M["Continue monitoring"]
-    D -->|Suspicious state| I["Investigator"]
-    I --> C["Critic"]
-    C --> V["Verifier"]
-    V --> R["Evidence-backed diagnosis"]
+  UI[React UI] --> Native[Tauri runtime]
+  Native --> Core[Python sidecar]
+  Core --> DB[(Local SQLite)]
+  DB --> Check[Baseline and rules]
+  Check --> Evidence[Evidence and hypotheses]
+  Evidence --> Verify[Critic and verifier]
+  Verify --> UI
 ```
 
----
+Основные папки: `desktop/src` — интерфейс; `desktop/src/locales` — переводы; `desktop/src-tauri` — desktop runtime; `sherlock` — ядро; `tests` — Python-тесты; `build_support` — упаковка.
 
-## 🛠 Стек
 
-### Уже используется
 
-```text
-Core          Python 3.11+
-System data   psutil
-Storage       SQLite
-Validation    structured Python models
-Testing       pytest
-```
-
-### Текущий desktop layer
-
-```text
-Desktop       Tauri 2 + React + TypeScript (Alpha)
-Bridge        narrow Rust invoke → bundled PyInstaller sidecar
-```
-
-### Планируется
-
-```text
-Analytics     Polars / NumPy / scikit-learn
-Vector        FAISS or SQLite vector extension
-Embeddings    sentence-transformers
-Local LLM     provider abstraction / Ollama
-ML            scikit-learn + time-series methods
-```
-
----
-
-## 🗺 Roadmap
-
-### v0.1 — Observe & Investigate
-
-- [x] Windows telemetry collector
-- [x] Process history
-- [x] SQLite event storage
-- [x] Behavioral baseline
-- [x] Anomaly Detection MVP — пороговый отчёт CPU/RAM/swap
-- [x] Evidence model
-- [x] Investigation state machine MVP — фиксированный проход по сохранённому состоянию
-- [x] Investigator / Critic / Verifier MVP — гипотезы по CPU/RAM/swap, критика и проверка сигналов
-- [x] State Diff
-- [x] File indexing MVP — метаданные, опциональный UTF-8 текст и буквальный поиск
-- [x] SherlockBench MVP
-- [x] Desktop Alpha — Tauri/React shell + System Health + bounded Diagnose view
-- [x] Desktop release packaging — bundled PyInstaller sidecar + NSIS installer build
-
-### v0.2 — Remember
-
-- [ ] Activity timeline
-- [ ] Sessionization
-- [ ] Recall
-- [ ] Sherlock Replay
-
-### v0.3 — Act
-
-- [ ] Action Proposals
-- [ ] Policy Engine
-- [ ] Confirmation flow
-- [ ] Safe Executor
-- [ ] Audit Log
-
----
-
-## 📚 Документация
-
-- **[Architecture](docs/architecture.md)** — компоненты, data flow, evidence model и Investigation Engine.
-- **[Threat Model](docs/threat-model.md)** — privacy zones, trust boundaries, prompt injection и safe actions.
-- **[Desktop Alpha](docs/desktop.md)** — Tauri/React UI, bundled Python sidecar, standalone Windows build и ограничения текущего слоя.
-- **[Demo](docs/assets/demo.gif)** — UI-концепт SherlockPC.
-- **[SherlockBench on Hugging Face](https://huggingface.co/datasets/fireaideveloper/SherlockBench)** — опубликованный dataset.
-- **[Kaggle profile](https://www.kaggle.com/fireaideveloper)** — dataset, EDA и эксперименты.
-
----
-
-## 🎯 Цель проекта
-
-SherlockPC создаётся как research pet project на пересечении:
-
-**Machine Learning · Time Series · Anomaly Detection · Multi-Agent Systems · Local AI · System Engineering**
-
-Цель — построить систему, которая не просто генерирует правдоподобный ответ о состоянии ПК, а умеет **собирать evidence, проверять альтернативы и явно показывать, почему она пришла к выводу**.
-
----
-
-<div align="center">
-
-## 🕵️ Компьютер, который наконец может объяснить себя.
-
-**Ask what happened. Sherlock investigates.**
-
-[GitHub](https://github.com/fireaideveloper/SherlockPC) ·
-[Hugging Face](https://huggingface.co/datasets/fireaideveloper/SherlockBench) ·
-[Kaggle](https://www.kaggle.com/fireaideveloper)
-
-</div>
+[SherlockBench dataset Kaggle](https://www.kaggle.com/datasets/fireaideveloper/sherlockbench-windows-workload-telemetry) · [SherlockBench dataset Hugging Face](https://huggingface.co/datasets/fireaideveloper/SherlockBench) · [GitHub](https://github.com/fireaideveloper/SherlockPC)
