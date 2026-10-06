@@ -107,3 +107,35 @@ def test_default_database_path_uses_override(monkeypatch, tmp_path):
     expected = tmp_path / "custom.db"
     monkeypatch.setenv("SHERLOCK_DB_PATH", str(expected))
     assert default_database_path() == expected
+
+
+def test_periodic_captures_build_history_without_questions(tmp_path):
+    from dataclasses import replace
+    from datetime import timedelta
+
+    class TickingCollector(FakeCollector):
+        tick = 0
+
+        def collect(self):
+            snapshot = super().collect()
+            observed = NOW + timedelta(seconds=self.tick * 10)
+            self.tick += 1
+            return replace(snapshot, started_at=observed, finished_at=observed,
+                           system=replace(snapshot.system, timestamp=observed),
+                           processes=replace(snapshot.processes, started_at=observed,
+                                             finished_at=observed))
+
+    service = DesktopService(tmp_path / "auto.db", collector=TickingCollector())
+    for _ in range(31):
+        overview = service.overview()
+    assert overview["history"]["sample_count"] == 30
+    assert overview["history"]["span_seconds"] == 290
+    assert overview["history"]["status"] == "insufficient_data"
+    overview = service.overview()
+    assert overview["history"]["sample_count"] == 31
+    assert overview["history"]["span_seconds"] == 300
+    assert overview["history"]["largest_gap_seconds"] == 10
+    assert overview["history"]["status"] == "enough_data"
+    report = service.investigate_current("CPU pressure?")["report"]
+    assert report["status"] != "INSUFFICIENT_EVIDENCE"
+    assert report["anomaly_report"]["evidence_report"]["baseline"]["sample_count"] == 32
