@@ -6,6 +6,7 @@ from .models import SystemMetric
 
 
 class TelemetryCollector:
+
     def collect(self) -> SystemMetric:
         cpu_percent = psutil.cpu_percent(interval=1.0)
 
