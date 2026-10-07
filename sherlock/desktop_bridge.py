@@ -1,10 +1,3 @@
-"""Structured JSON bridge for the SherlockPC desktop sidecar.
-
-The bridge exposes a deliberately small allow-list of application operations.
-It can run as a normal Python module during development or as a PyInstaller
-sidecar embedded in the Tauri application.
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -20,12 +13,7 @@ from sherlock.desktop import DesktopService
 
 
 def default_database_path() -> Path:
-    """Return a writable per-user database path.
 
-    A packaged desktop app may be installed below Program Files, so its data
-    must never be stored next to the executable. SHERLOCK_DB_PATH remains an
-    explicit escape hatch for tests and advanced users.
-    """
     override = os.environ.get("SHERLOCK_DB_PATH")
     if override:
         return Path(override).expanduser()
@@ -64,6 +52,17 @@ def handle_request(
         return service.capture_state()
     if action == "recent_states":
         return service.recent_states(limit=int(payload.get("limit", 6)))
+    if action == "history_info":
+        return service.history_store.info()
+    if action == "history_page":
+        return service.history_store.page(
+            page=int(payload.get("page", 0)), page_size=int(payload.get("page_size", 5)),
+            anchor_id=int(payload["anchor_id"]) if payload.get("anchor_id") is not None else None,
+        )
+    if action == "open_history_folder":
+        return service.history_store.open_folder()
+    if action == "clear_history":
+        return service.history_store.clear(confirmed=payload.get("confirmed") is True)
     if action == "investigate":
         return service.investigate_current(
             str(payload.get("question", "")),
@@ -83,7 +82,12 @@ def _request_from_args(argv: Sequence[str] | None = None) -> dict[str, Any]:
     if unknown:
         raise ValueError(f"unsupported arguments: {' '.join(unknown)}")
 
-    raw = args.request_json if args.request_json is not None else sys.stdin.read()
+    if args.request_json is not None:
+        raw = args.request_json
+    elif hasattr(sys.stdin, "buffer"):
+        raw = sys.stdin.buffer.read().decode("utf-8")
+    else:
+        raw = sys.stdin.read()
     if not raw.strip():
         raise ValueError("expected a JSON request")
 
@@ -102,11 +106,11 @@ def main(argv: Sequence[str] | None = None) -> None:
     except (ValueError, TypeError, OSError, json.JSONDecodeError) as error:
         response = {"ok": False, "error": str(error)}
         exit_code = 2
-    except Exception as error:  # keep bridge failures structured for the UI
+    except Exception as error:
         response = {"ok": False, "error": f"backend failure: {error}"}
         exit_code = 1
 
-    print(json.dumps(response, ensure_ascii=False, allow_nan=False, default=_json_default))
+    print(json.dumps(response, ensure_ascii=True, allow_nan=False, default=_json_default))
     raise SystemExit(exit_code)
 
 
