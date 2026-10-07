@@ -5,11 +5,14 @@ from pathlib import Path
 from typing import Any
 
 from sherlock.capabilities.state.collector import StateCollector
+from sherlock.capabilities.state.baseline import build_baseline
+from sherlock.storage.sqlite.baseline_reader import BaselineReader
 from sherlock.capabilities.state.models import StateSnapshot
 from sherlock.investigation import InvestigationRequest, investigate
 from sherlock.investigation.source import sqlite_source
 from sherlock.storage.sqlite import Database
 from sherlock.storage.sqlite.state_repository import StateRepository
+from sherlock.desktop.history import HistoryStore
 
 
 _GIB = 1024 ** 3
@@ -26,6 +29,7 @@ class DesktopService:
         self.database = Database(self.database_path)
         self.database.initialize()
         self.repository = StateRepository(self.database)
+        self.history_store = HistoryStore(self.database)
         self.collector = collector or StateCollector()
 
     def capture_state(self) -> dict[str, Any]:
@@ -81,16 +85,26 @@ class DesktopService:
             "current": current,
             "report": asdict(report),
             "note": (
-                "Desktop Alpha does not route natural language yet. "
+                "Desktop v0.1 does not route natural language yet. "
                 "The question is attached to a bounded CPU/RAM/swap investigation."
             ),
         }
 
     def overview(self) -> dict[str, Any]:
         current = self.capture_state()
+        baseline = build_baseline(BaselineReader(self.database).load(current["state_id"]))
         return {
             "current": current,
             "recent": self.recent_states(),
+            "storage": self.history_store.info(),
+            "history": {
+                "sample_count": baseline.sample_count,
+                "span_seconds": baseline.span_seconds,
+                "largest_gap_seconds": baseline.largest_gap_seconds,
+                "min_samples": baseline.min_samples,
+                "min_span_seconds": baseline.min_span_seconds,
+                "status": baseline.status,
+            },
             "capabilities": {
                 "diagnose": True,
                 "search": False,
