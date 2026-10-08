@@ -1,12 +1,10 @@
 from __future__ import annotations
-
 import argparse
 import json
 import os
 import sys
 from pathlib import Path
 from typing import Any, Sequence
-
 from sherlock import __version__
 from sherlock.baseline import _json_default
 from sherlock.desktop import DesktopService
