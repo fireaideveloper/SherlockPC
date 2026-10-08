@@ -1,3 +1,4 @@
+"""List alternative explanations and concrete checks for every candidate."""
 from sherlock.capabilities.state.evidence import EvidenceReport
 from .investigator import RULES
 from .reasoning_models import Critique, Hypothesis

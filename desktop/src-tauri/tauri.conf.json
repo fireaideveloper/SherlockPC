@@ -2,25 +2,29 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "SherlockPC",
   "version": "0.1.0",
-  "identifier": "dev.sherlockpc.desktop",
+  "identifier": "io.github.fireaideveloper.sherlockpc",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://127.0.0.1:1420",
     "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist"
+    "frontendDist": "../dist",
+    "windows": {
+      "staticVCRuntime": true
+    }
   },
   "app": {
     "windows": [
       {
         "label": "main",
-        "title": "SherlockPC",
-        "width": 1360,
-        "height": 900,
-        "minWidth": 1000,
-        "minHeight": 720,
+        "title": "SherlockPC — Observe & Investigate",
+        "width": 1200,
+        "height": 760,
+        "minWidth": 820,
+        "minHeight": 680,
         "resizable": true,
         "fullscreen": false,
-        "center": true
+        "center": true,
+        "visible": false
       }
     ],
     "security": {
@@ -32,7 +36,12 @@
     "targets": [
       "nsis"
     ],
+    "category": "Utility",
+    "publisher": "fireaideveloper",
+    "homepage": "https://github.com/fireaideveloper/SherlockPC",
+    "copyright": "Copyright © 2026 fireaideveloper",
     "shortDescription": "Evidence-driven local PC investigator",
+    "longDescription": "SherlockPC is a local-first Windows desktop investigator that captures system evidence, evaluates bounded diagnostic hypotheses and shows a traceable investigation result.",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -41,6 +50,14 @@
     ],
     "externalBin": [
       "binaries/sherlock-backend"
-    ]
+    ],
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "installerIcon": "icons/icon.ico",
+        "startMenuFolder": "SherlockPC",
+        "installerHooks": "installer-hooks.nsh"
+      }
+    }
   }
 }

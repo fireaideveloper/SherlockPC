@@ -3,7 +3,10 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  json: { namedExports: false, stringify: true },
   clearScreen: false,
+  // Bound build time for dynamic locale catalogs; keep minification enabled.
+  build: { rollupOptions: { treeshake: false } },
   server: {
     port: 1420,
     strictPort: true,

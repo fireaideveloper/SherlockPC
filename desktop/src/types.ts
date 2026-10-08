@@ -35,7 +35,16 @@ export type RecentState = {
 
 export type Overview = {
   current: Snapshot;
+  storage: StorageInfo;
   recent: RecentState[];
+  history: {
+    sample_count: number;
+    span_seconds: number;
+    largest_gap_seconds: number | null;
+    min_samples: number;
+    min_span_seconds: number;
+    status: "insufficient_data" | "enough_data";
+  };
   capabilities: Record<string, boolean>;
 };
 
@@ -70,7 +79,11 @@ export type Investigation = {
   current: Snapshot;
   note: string;
   report: {
-    status: "ANOMALIES_FOUND" | "NO_ANOMALY_FOUND" | "INSUFFICIENT_EVIDENCE" | "DATA_UNAVAILABLE";
+    status:
+      | "ANOMALIES_FOUND"
+      | "NO_ANOMALY_FOUND"
+      | "INSUFFICIENT_EVIDENCE"
+      | "DATA_UNAVAILABLE";
     conclusion: string;
     findings: Finding[];
     trace: TraceEvent[];
@@ -91,4 +104,19 @@ export type Investigation = {
       };
     };
   };
+};
+
+export type StorageInfo = {
+  database_path: string;
+  state_count: number;
+  size_bytes: number;
+  generation: string;
+};
+export type HistoryPage = {
+  rows: Array<RecentState & { swap_percent: number }>;
+  total: number;
+  page: number;
+  page_size: number;
+  anchor_id: number;
+  generation: string;
 };

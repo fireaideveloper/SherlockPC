@@ -8,19 +8,34 @@
     "build": "tsc && vite build",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "check": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test:ui": "node tests/ui-layout.cjs && node tests/localization.cjs",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.8.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "@fontsource-variable/noto-sans-arabic": "5.3.0",
+    "@fontsource-variable/noto-sans-devanagari": "5.3.0",
+    "@fontsource-variable/noto-sans-jp": "5.3.0",
+    "@fontsource-variable/noto-sans-kr": "5.3.0",
+    "@fontsource-variable/noto-sans-sc": "5.3.0",
+    "@tauri-apps/api": "2.12.1",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.8.4",
-    "@types/react": "^19.1.16",
-    "@types/react-dom": "^19.1.9",
-    "@vitejs/plugin-react": "^5.0.4",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.7"
+    "@playwright/test": "1.62.1",
+    "@tauri-apps/cli": "2.12.1",
+    "@types/react": "19.1.16",
+    "@types/react-dom": "19.1.9",
+    "@vitejs/plugin-react": "5.0.4",
+    "prettier": "3.6.2",
+    "typescript": "5.9.2",
+    "vite": "7.3.6"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

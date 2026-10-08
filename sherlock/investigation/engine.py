@@ -17,6 +17,7 @@ class BaselineSource(Protocol):
 
 
 class _StateMachine:
+    """Only forward transitions; one collection, no retries or autonomous loop."""
 
     _allowed = {
         None: ("UNDERSTAND",),
@@ -41,6 +42,7 @@ class _StateMachine:
 
 
 def investigate(request: InvestigationRequest, source: BaselineSource) -> CaseReport:
+    """Check stored CPU/RAM/swap deviations; do not diagnose their root cause."""
     machine = _StateMachine()
     machine.move("UNDERSTAND", f"Check system deviations for state {request.state_id}.")
     machine.move("PLAN", f"One read, up to {request.limit} historical states; CPU/RAM/swap rules.")
