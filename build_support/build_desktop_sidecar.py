@@ -1,5 +1,3 @@
-"""Build the Python desktop bridge as a Tauri externalBin sidecar."""
-
 from __future__ import annotations
 
 import argparse
@@ -44,7 +42,7 @@ def destination_for(triple: str) -> Path:
 
 
 def newest_source_mtime() -> float:
-    candidates = [ROOT / "pyproject.toml", ENTRYPOINT]
+    candidates = [ROOT / "pyproject.toml", ENTRYPOINT, Path(__file__)]
     candidates.extend((ROOT / "sherlock").rglob("*.py"))
     return max(path.stat().st_mtime for path in candidates if path.exists())
 
@@ -107,6 +105,7 @@ def smoke_test(binary: Path) -> None:
         capture_output=True,
         text=True,
         timeout=30,
+        creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
     )
     try:
         payload = json.loads(result.stdout.strip())
