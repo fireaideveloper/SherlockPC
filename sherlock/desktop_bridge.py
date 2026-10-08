@@ -11,7 +11,6 @@ from sherlock.desktop import DesktopService
 
 
 def default_database_path() -> Path:
-
     override = os.environ.get("SHERLOCK_DB_PATH")
     if override:
         return Path(override).expanduser()
