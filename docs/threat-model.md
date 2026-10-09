@@ -1,5 +1,9 @@
 # Threat Model и приватность SherlockPC
 
+[English README](../README.md) · [Русский README](../README.ru.md) · [Documentation](README.md) · [Desktop guide](desktop.md) · [File index](files.md)
+
+> **Design document:** this page includes future architecture and security goals beyond the released v0.1 desktop. For current behavior, see the READMEs and desktop guide.
+
 > SherlockPC наблюдает за локальной системой, поэтому privacy и security являются частью архитектуры, а не дополнительной настройкой.
 
 ![Privacy flow](assets/privacy-flow.svg)
@@ -365,3 +369,5 @@ SherlockPC не является:
 - [ ] Medium/High actions требуют подтверждения
 - [ ] Audit Log фиксирует изменения
 - [ ] Есть тесты на privacy exclusions
+
+[English README](../README.md) · [Русский README](../README.ru.md) · [Documentation](README.md) · [Desktop guide](desktop.md) · [File index](files.md)
