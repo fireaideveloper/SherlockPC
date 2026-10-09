@@ -1,5 +1,9 @@
 # Архитектура SherlockPC
 
+[English README](../README.md) · [Русский README](../README.ru.md) · [Documentation](README.md) · [Desktop guide](desktop.md) · [File index](files.md)
+
+> **Design document:** this page includes future architecture and security goals beyond the released v0.1 desktop. For current behavior, see the READMEs and desktop guide.
+
 > **Статус:** design / MVP  
 > **Платформа MVP:** Windows  
 > **Принцип:** deterministic capabilities + bounded AI reasoning
@@ -407,3 +411,5 @@ DesktopService
 
 Для development Tauri запускает локальный Python из репозитория. Release packaging должен заменить это на bundled Python sidecar, чтобы конечному пользователю не требовалась отдельная установка Python.
 
+
+[English README](../README.md) · [Русский README](../README.ru.md) · [Documentation](README.md) · [Desktop guide](desktop.md) · [File index](files.md)
