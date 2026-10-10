@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import hashlib
-import json
 from pathlib import Path
 import shutil
 import tempfile
 import struct
+
+if __package__:
+    from .release_preflight import release_metadata
+else:
+    from release_preflight import release_metadata
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -41,13 +45,7 @@ def require_gui_executable(path: Path) -> None:
 
 
 def package_release(root: Path = ROOT) -> Path:
-    config = json.loads((root / 'desktop/src-tauri/tauri.conf.json').read_text(encoding='utf-8'))
-    native_version = config['version']
-    version = (root / 'VERSION').read_text(encoding='ascii').strip()
-    if not isinstance(version, str) or not all(c in '0123456789.' for c in version):
-        raise ValueError('Expected a numeric release version')
-    if native_version != (version + '.0' if version.count('.') == 1 else version):
-        raise ValueError('VERSION and Tauri version disagree')
+    version, native_version = release_metadata(root)
     target = root / 'desktop/src-tauri/target/release'
     installer = target / 'bundle/nsis' / f'SherlockPC_{native_version}_x64-setup.exe'
     notes = root / f'RELEASE_NOTES_v{version}.md'
