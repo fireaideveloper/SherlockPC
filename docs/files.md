@@ -2,7 +2,7 @@
 
 [English README](../README.md) · [Русский README](../README.ru.md) · [Documentation](README.md) · **File index**
 
-Every project file below links to its actual relative path. Git internals are retained in the archive but omitted from this documentation index. Directory links work as browsing links on GitHub; individual file links are suitable for local Markdown viewers.
+Every project file below links to its actual relative path. This index describes tracked source files; Git internals and generated build outputs are omitted. Directory links work as browsing links on GitHub; individual file links are suitable for local Markdown viewers.
 
 ## Sections
 
@@ -39,6 +39,7 @@ Every project file below links to its actual relative path. Git internals are re
 | [build_support/build_desktop_sidecar.py](../build_support/build_desktop_sidecar.py) | py |
 | [build_support/check_runtime.py](../build_support/check_runtime.py) | py |
 | [build_support/package_desktop_release.py](../build_support/package_desktop_release.py) | py |
+| [build_support/release_preflight.py](../build_support/release_preflight.py) | py |
 
 [Back to sections](#sections) · [Documentation](README.md)
 ## desktop
@@ -49,6 +50,9 @@ Every project file below links to its actual relative path. Git internals are re
 | [desktop/package.json](../desktop/package.json) | json |
 | [desktop/src/App.tsx](../desktop/src/App.tsx) | tsx |
 | [desktop/src/api.ts](../desktop/src/api.ts) | ts |
+| [desktop/src/components/Pager.tsx](../desktop/src/components/Pager.tsx) | tsx |
+| [desktop/src/components/OverviewMetrics.tsx](../desktop/src/components/OverviewMetrics.tsx) | tsx |
+| [desktop/src/components/InvestigationReport.tsx](../desktop/src/components/InvestigationReport.tsx) | tsx |
 | [desktop/src/i18n.ts](../desktop/src/i18n.ts) | ts |
 | [desktop/src/locales/ar.json](../desktop/src/locales/ar.json) | json |
 | [desktop/src/locales/de.json](../desktop/src/locales/de.json) | json |
@@ -68,7 +72,6 @@ Every project file below links to its actual relative path. Git internals are re
 | [desktop/src/styles.css](../desktop/src/styles.css) | css |
 | [desktop/src/types.ts](../desktop/src/types.ts) | ts |
 | [desktop/src-tauri/Cargo.toml](../desktop/src-tauri/Cargo.toml) | toml |
-| [desktop/src-tauri/binares/.gitkeep](../desktop/src-tauri/binares/.gitkeep) | text / metadata |
 | [desktop/src-tauri/binaries/.gitkeep](../desktop/src-tauri/binaries/.gitkeep) | text / metadata |
 | [desktop/src-tauri/build.rs](../desktop/src-tauri/build.rs) | rs |
 | [desktop/src-tauri/capabilities/default.json](../desktop/src-tauri/capabilities/default.json) | json |
@@ -194,6 +197,7 @@ Every project file below links to its actual relative path. Git internals are re
 | [tests/test_processes.py](../tests/test_processes.py) | py |
 | [tests/test_reasoning.py](../tests/test_reasoning.py) | py |
 | [tests/test_release_packaging.py](../tests/test_release_packaging.py) | py |
+| [tests/test_release_preflight.py](../tests/test_release_preflight.py) | py |
 | [tests/test_scenario_batch.py](../tests/test_scenario_batch.py) | py |
 | [tests/test_state_diff.py](../tests/test_state_diff.py) | py |
 | [tests/test_state_snapshots.py](../tests/test_state_snapshots.py) | py |

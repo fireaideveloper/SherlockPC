@@ -28,6 +28,11 @@ The backend is built by [build_desktop_sidecar.py](../build_support/build_deskto
 
 ## Storage
 
+History has no automatic retention policy in v0.1. Database size grows with
+collection; History/Settings expose its size and explicit confirmed clearing.
+Clearing removes records but SQLite may retain allocated pages for reuse.
+
+
 Packaged Windows default:
 
 ```text
@@ -49,6 +54,20 @@ RUN_DESKTOP_DEV.cmd
 The [launcher](../RUN_DESKTOP_DEV.cmd) checks tools, prepares the Python build environment, builds the target-specific backend, installs frontend dependencies when needed and starts Tauri development mode.
 
 ## Build and package
+
+Check source-only release prerequisites before installing build dependencies:
+
+```bash
+python build_support/release_preflight.py
+```
+
+The [preflight](../build_support/release_preflight.py) rejects missing or empty
+release notes, configured icons and installer hooks, missing source entry points
+and catalogs, legacy `binares` directories, and inconsistent Python/npm/Cargo/Tauri
+versions. It needs only Python 3.11+ and no compiled outputs. The Windows builder
+runs it before preparing its build environment; Windows CI runs it before Node
+and Rust setup. This source validation does not replace the native build checks.
+
 
 ```bat
 BUILD_DESKTOP_WINDOWS.cmd

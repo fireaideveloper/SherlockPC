@@ -37,7 +37,9 @@ if errorlevel 1 (
 %PY_CMD% --version
 
 echo.
-echo [3/9] Checking Node/npm and Rust/Cargo...
+echo [3/9] Validating release inputs and checking Node/npm and Rust/Cargo...
+%PY_CMD% build_support\release_preflight.py
+if errorlevel 1 goto :fail
 where node >nul 2>&1 || (echo ERROR: Node.js was not found. & goto :fail)
 where npm >nul 2>&1 || (echo ERROR: npm was not found. & goto :fail)
 where cargo >nul 2>&1 || (echo ERROR: Cargo was not found. & goto :fail)
