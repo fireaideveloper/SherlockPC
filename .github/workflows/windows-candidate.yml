@@ -12,6 +12,8 @@ jobs:
         with:
           python-version: '3.12'
           architecture: x64
+      - name: Validate release source inputs
+        run: python build_support/release_preflight.py
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
