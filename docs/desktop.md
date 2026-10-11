@@ -2,7 +2,7 @@
 
 [English README](../README.md) · [Русский README](../README.ru.md) · [Documentation](README.md) · [File index](files.md) · [CLI guide](cli.md)
 
-The released Windows desktop uses React, Tauri 2 and a bundled Python backend. End users install the NSIS package; they do not need a Python, Node.js or Rust installation.
+The implemented v0.1 Windows desktop uses React, Tauri 2 and a bundled Python backend. Once the installer is published, end users install the NSIS package; they do not need a Python, Node.js or Rust installation.
 
 ## Runtime and background collection
 
@@ -92,7 +92,7 @@ Distribute the installer so that the native application and backend arrive toget
 
 Use the [README source checks](../README.md#source-checks) for Python, TypeScript, frontend and browser UI checks. Browser UI tests use a fixture and mock IPC; they cannot verify native integration.
 
-On Windows, check installation and launch, tray hide/show, continued sampling while hidden, exit stopping collection, sign-in autostart, one-instance behavior, opening the data folder, confirmed clearing, and offline rendering of all languages. Automated workflows: [quality](../.github/workflows/quality.yml), [Windows build](../.github/workflows/windows-candidate.yml). The historical workflow name “candidate” does not change the public v0.1 release status.
+On Windows, check installation and launch, tray hide/show, continued sampling while hidden, exit stopping collection, sign-in autostart, one-instance behavior, opening the data folder, confirmed clearing, and offline rendering of all languages. Automated workflows: [quality](../.github/workflows/quality.yml), [Windows build](../.github/workflows/windows-candidate.yml). The historical workflow name “candidate” is not a claim that an installer is published or that native checks have passed.
 
 ## Build troubleshooting
 
