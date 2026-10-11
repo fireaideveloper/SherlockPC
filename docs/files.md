@@ -9,6 +9,7 @@ Every project file below links to its actual relative path. This index describes
 [.github](#github) · [Root](#root) · [build_support](#build_support) · [desktop](#desktop) · [docs](#docs) · [licenses](#licenses) · [sherlock](#sherlock) · [tests](#tests)
 
 ## .github
+
 | File | Type |
 |---|---|
 | [.github/workflows/quality.yml](../.github/workflows/quality.yml) | yml |
@@ -16,6 +17,7 @@ Every project file below links to its actual relative path. This index describes
 
 [Back to sections](#sections) · [Documentation](README.md)
 ## Root
+
 | File | Type |
 |---|---|
 | [.gitignore](../.gitignore) | text / metadata |
@@ -34,6 +36,7 @@ Every project file below links to its actual relative path. This index describes
 
 [Back to sections](#sections) · [Documentation](README.md)
 ## build_support
+
 | File | Type |
 |---|---|
 | [build_support/build_desktop_sidecar.py](../build_support/build_desktop_sidecar.py) | py |
@@ -43,6 +46,7 @@ Every project file below links to its actual relative path. This index describes
 
 [Back to sections](#sections) · [Documentation](README.md)
 ## desktop
+
 | File | Type |
 |---|---|
 | [desktop/index.html](../desktop/index.html) | html |
@@ -95,11 +99,16 @@ Every project file below links to its actual relative path. This index describes
 
 [Back to sections](#sections) · [Documentation](README.md)
 ## docs
+
 | File | Type |
 |---|---|
 | [docs/README.md](../docs/README.md) | md |
 | [docs/architecture.md](../docs/architecture.md) | md |
 | [docs/assets/architecture.svg](../docs/assets/architecture.svg) | svg |
+| [docs/assets/desktop-overview.svg](../docs/assets/desktop-overview.svg) | svg |
+| [docs/assets/desktop-pipeline.svg](../docs/assets/desktop-pipeline.svg) | svg |
+| [docs/assets/feature-strip.svg](../docs/assets/feature-strip.svg) | svg |
+| [docs/assets/investigation-flow.gif](../docs/assets/investigation-flow.gif) | gif |
 | [docs/assets/demo.gif](../docs/assets/demo.gif) | gif |
 | [docs/assets/overview.png](../docs/assets/overview.png) | png |
 | [docs/assets/privacy-flow.svg](../docs/assets/privacy-flow.svg) | svg |
@@ -110,6 +119,7 @@ Every project file below links to its actual relative path. This index describes
 
 [Back to sections](#sections) · [Documentation](README.md)
 ## licenses
+
 | File | Type |
 |---|---|
 | [licenses/NOTO-SANS-ARABIC-LICENSE.txt](../licenses/NOTO-SANS-ARABIC-LICENSE.txt) | txt |
@@ -120,6 +130,7 @@ Every project file below links to its actual relative path. This index describes
 
 [Back to sections](#sections) · [Documentation](README.md)
 ## sherlock
+
 | File | Type |
 |---|---|
 | [sherlock/__init__.py](../sherlock/__init__.py) | py |
@@ -180,6 +191,7 @@ Every project file below links to its actual relative path. This index describes
 
 [Back to sections](#sections) · [Documentation](README.md)
 ## tests
+
 | File | Type |
 |---|---|
 | [tests/test_anomalies.py](../tests/test_anomalies.py) | py |
