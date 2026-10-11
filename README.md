@@ -1,26 +1,36 @@
 # SherlockPC
 
-![SherlockPC v0.1 — Observe and investigate](docs/assets/readme-banner.svg)
+![SherlockPC — Observe. Investigate. Understand.](docs/assets/readme-banner.svg)
 
-**English** · [Русский](README.ru.md) · [Documentation](docs/README.md) · [Download release](https://github.com/fireaideveloper/SherlockPC/releases) · [Report an issue](https://github.com/fireaideveloper/SherlockPC/issues)
+**English** · [Русский](README.ru.md) · [Documentation](docs/README.md) · [Releases](https://github.com/fireaideveloper/SherlockPC/releases) · [Report an issue](https://github.com/fireaideveloper/SherlockPC/issues)
 
-**Understand the load. Check the facts. Keep the history.**
+**Observe. Investigate. Understand.**
 
-SherlockPC is a local Windows desktop application that records system and process measurements and checks CPU, RAM and swap against saved history. Reports connect observations and bounded hypotheses to evidence, with explicit limits on what the data can prove.
+When a PC feels slow, a single utilization number rarely explains what changed. SherlockPC keeps the measurements that make a comparison possible: CPU, RAM, swap and process snapshots, stored locally over time.
 
-**v0.1 · Released · Windows x64 · Local processing · 12 interface languages**
+Run a bounded investigation to compare the current state with saved history. Follow each finding back to its evidence, inspect the reasoning trace, and see the limits of the conclusion. The desktop uses deterministic checks and works without a cloud LLM.
 
-Public version: [0.1](VERSION). npm, Cargo and Tauri use the technical version `0.1.0`. This documentation describes the released version; broader design documents include future plans.
+**v0.1 in preparation · Windows x64 · Local processing · 12 interface languages**
+
+Public version: [0.1](VERSION). npm, Cargo and Tauri use the technical version `0.1.0`. This page describes the implemented v0.1 desktop. The Windows installer will be built and validated before publication; broader design documents include future plans.
 
 ## Contents
 
-[Start here](#start-here) · [Features](#features) · [Using the app](#using-the-app) · [How it works](#how-it-works) · [Languages](#languages) · [Privacy and storage](#privacy-and-storage) · [Development](#development) · [Project map](#project-map) · [Troubleshooting](#troubleshooting) · [Limits](#limits) · [Links and licenses](#links-and-licenses)
+[Showcase](#desktop-showcase) · [Start here](#start-here) · [Features](#features) · [Using the app](#using-the-app) · [How it works](#how-it-works) · [Walkthrough](#visual-walkthrough) · [Languages](#languages) · [Privacy and storage](#privacy-and-storage) · [Development](#development) · [Project map](#project-map) · [Troubleshooting](#troubleshooting) · [Limits](#limits) · [Release and contributing](#release-and-contributing) · [Links and licenses](#links-and-licenses)
+
+## Desktop showcase
+
+![Illustrated desktop: CPU, memory, swap and process metrics; overview check, evidence result and saved history](docs/assets/desktop-overview.svg)
+
+*Source-grounded illustration with synthetic values, not a screenshot.* It follows the views and controls in [App.tsx](desktop/src/App.tsx) and the visual tokens in [styles.css](desktop/src/styles.css). No native Windows capture was available for this documentation update.
+
+**Observe:** see the current state. **Investigate:** inspect evidence and reasoning. **History:** revisit saved measurements. **Settings:** manage appearance, startup and storage.
 
 ## Start here
 
 | I want to… | Open |
 |---|---|
-| Install and use SherlockPC | [Released installers](https://github.com/fireaideveloper/SherlockPC/releases), then [Using the app](#using-the-app) |
+| Install and use SherlockPC | [Releases page — installer forthcoming](https://github.com/fireaideveloper/SherlockPC/releases), then [Using the app](#using-the-app) |
 | Read in Russian | [Русский README](README.ru.md) |
 | See the v0.1 changes | [Release notes](RELEASE_NOTES_v0.1.md) |
 | Run or build the desktop app | [Desktop guide](docs/desktop.md) |
@@ -28,7 +38,9 @@ Public version: [0.1](VERSION). npm, Cargo and Tauri use the technical version `
 | Understand the long-term design | [Architecture](docs/architecture.md) and [Threat model](docs/threat-model.md) — design documents |
 | Explore Python tools | [CLI guide](docs/cli.md) |
 
-Download **`SherlockPC-v0.1-Setup.exe`** from the release page, install it and open SherlockPC. The installed application bundles its Python backend; users do not need Python, Node.js or Rust. The source ZIP is for development and does not contain the installer.
+**The v0.1 installer is planned for the first public release.** Once published on the [Releases page](https://github.com/fireaideveloper/SherlockPC/releases), download `SherlockPC-v0.1-Setup.exe`, install it and open SherlockPC. The installer bundles its Python backend; users do not need Python, Node.js or Rust. WebView2 Runtime is required. The source ZIP is for development and does not contain the installer.
+
+To try the source now, use [Development](#development). This documentation update does not certify native installer, tray or autostart behavior.
 
 If the release includes `SHA256SUMS.txt`, compare its hash with this PowerShell output from your download folder:
 
@@ -37,6 +49,8 @@ Get-FileHash .\SherlockPC-v0.1-Setup.exe -Algorithm SHA256
 ```
 
 ## Features
+
+![Observe system measurements, compare historical baselines, investigate evidence](docs/assets/feature-strip.svg)
 
 | Feature | Available in v0.1 |
 |---|---|
@@ -47,7 +61,8 @@ Get-FileHash .\SherlockPC-v0.1-Setup.exe -Algorithm SHA256
 | Background operation | Closing the window hides it in the tray and keeps collecting |
 | Windows autostart | Optional background launch when you sign in |
 | Appearance and localization | Light, dark and system themes; 12 languages; saved preferences |
-| Developer tools | State Diff, file indexing/search and workload experiments through Python |
+
+**Separate developer utilities:** State Diff, file indexing/search and workload experiments are available through Python, outside the desktop interface. See the [CLI guide](docs/cli.md).
 
 ## Using the app
 
@@ -55,7 +70,7 @@ Get-FileHash .\SherlockPC-v0.1-Setup.exe -Algorithm SHA256
 2. Leave SherlockPC running to build a comparison history. Readiness depends on **both sample count and elapsed observation span**. Default requirements are 30 historical samples and a 300-second span; the app shows progress.
 3. Choose **Check CPU** or **Check memory**, or enter a question as a label for the check.
 4. Press **Investigate →**, then open **Investigation** to inspect findings, evidence, trace and limits.
-5. Browse **History** for saved states. Enable sign-in autostart in **Settings** if needed.
+5. Browse **History** for saved states. Review sign-in autostart in **Settings**. The installed Windows build enables it on first launch; later explicit preferences are preserved.
 
 | View or control | What it does |
 |---|---|
@@ -76,32 +91,28 @@ Get-FileHash .\SherlockPC-v0.1-Setup.exe -Algorithm SHA256
 
 The current desktop uses deterministic Python checks. It does not require an LLM or cloud API.
 
-```mermaid
-flowchart TD
-    UI["React desktop UI"] -->|"Request"| Native["Tauri runtime"]
-    Worker["Background worker"] -->|"About every 10 seconds"| Native
-    Native -->|"JSON request"| Core["Bundled Python sidecar"]
-    Core -->|"Save and read"| DB[("Local SQLite")]
-    DB --> Rules["Baseline and deviation rules"]
-    Rules --> Investigator["Investigator"]
-    Investigator --> Critic["Critic"]
-    Critic --> Verifier["Verifier"]
-    Verifier -->|"Evidence and limits"| UI
-```
+![Current desktop architecture: React UI, Rust runtime and background worker, one-shot Python sidecar, SQLite history, investigation logic and evidence report](docs/assets/desktop-pipeline.svg)
+
+**Request path:** React → native command → Rust → Python sidecar. The backend saves and reads SQLite history, compares the baseline, runs the investigation, critic and verifier, then returns a report through native IPC.
 
 The Rust runtime remains active in the tray. The backend is a **one-shot sidecar per request**, not a persistent Python service. Collection and manual refresh share a gate so an older response cannot overwrite a newer state.
 
-```mermaid
-stateDiagram-v2
-    [*] --> Visible: Launch
-    Visible --> Tray: Close window
-    Tray --> Visible: Show from tray
-    Visible --> Stopped: Exit from tray
-    Tray --> Stopped: Exit from tray
-    Stopped --> [*]
-```
+**Window lifecycle:** launch → visible window; close → hidden in tray; tray Open → visible; tray Exit → application and collection stop.
 
 Collection continues in the Visible and Tray states. See [desktop implementation](docs/desktop.md) and [source navigation](docs/files.md).
+
+## Visual walkthrough
+
+![Animated explanation: observe, compare history readiness, investigate bounded rules and inspect evidence with limits](docs/assets/investigation-flow.gif)
+
+*Explanatory animation of the implemented data flow, not application footage. Eight-second loop; synthetic illustrations.*
+
+1. **Observe:** periodic collection saves system and process states locally.
+2. **Compare:** historical sample count and observation span determine baseline readiness.
+3. **Investigate:** fixed CPU/RAM/swap rules produce findings examined by critic and verifier.
+4. **Inspect:** the report exposes evidence references, trace and limits. A signal alone does not prove a hardware fault.
+
+The steps above and the [static pipeline](docs/assets/desktop-pipeline.svg) convey the same information without animation.
 
 ## Languages
 
@@ -127,6 +138,8 @@ Collection and diagnosis run locally. The packaged Windows application uses:
 ```
 
 The actual path is shown in History and Settings. Development/tests can override it with `SHERLOCK_DB_PATH`. Standalone CLI tools may use different databases; see the [CLI guide](docs/cli.md).
+
+There is no automatic history retention limit in v0.1. Database size grows while collection runs; History/Settings show its size and allow confirmed clearing. SQLite may retain allocated pages for reuse after records are removed.
 
 To back up history, exit from the tray first and copy the **whole data folder**. Clearing states is irreversible and requires confirmation; automatic collection then starts a new history. Process metadata and paths may contain personal information, so keep your history database out of shared release archives.
 
@@ -164,10 +177,12 @@ After a successful build, `release/` contains `SherlockPC-v0.1-Setup.exe`, `SHA2
 ```bash
 python -m pip install -e ".[dev]"
 python -m pytest -q
+python build_support/release_preflight.py
 cd desktop
 npm ci
 npm run check
 npm test
+npm run format:check
 npm run build
 npx playwright install chromium
 npm run test:ui
@@ -210,7 +225,15 @@ When [reporting an issue](https://github.com/fireaideveloper/SherlockPC/issues),
 - A load signal does not prove a slowdown cause, hardware fault or memory leak. Fault probabilities are not computed.
 - Search, Recall and Actions are not exposed in the desktop UI. File indexing, State Diff and experiment tools are separate Python utilities.
 - Windows x64 is the release target. A portable Python core does not imply supported macOS/Linux desktop installers.
-- Architecture illustrations and demo assets linked from the design documents may show future concepts, rather than the released UI.
+- Architecture illustrations and demo assets linked from the design documents may show future concepts, and should be read as concepts. The new showcase and walkthrough are explicitly labeled illustrations of the current implementation.
+
+## Release and contributing
+
+The public version is **0.1**; npm, Cargo and Tauri use **0.1.0**. Read the [release notes](RELEASE_NOTES_v0.1.md), follow the [Windows build guide](docs/desktop.md), and check the [Releases page](https://github.com/fireaideveloper/SherlockPC/releases) for publication. Release/tag availability could not be independently verified during this update; this page does not claim a downloadable installer already exists.
+
+Before publishing, build the installer on Windows x64 and verify installation, offline launch, tray hide/show, continued collection, exit, startup preferences, history clearing and all twelve languages. [Windows CI](.github/workflows/windows-candidate.yml) defines a manually triggered build; a workflow link is not a passing status badge.
+
+For contributions, open an [issue](https://github.com/fireaideveloper/SherlockPC/issues) to explain a bug or proposed improvement. Fork the repository, create a focused branch, run the relevant [source checks](#source-checks), and open a pull request with reproduction steps or before/after behavior. Keep code and documentation claims aligned, and remove personal history from attachments.
 
 ## Links and licenses
 
