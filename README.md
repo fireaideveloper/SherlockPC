@@ -10,6 +10,7 @@ When a PC feels slow, a single utilization number rarely explains what changed. 
 
 Run a bounded investigation to compare the current state with saved history. Follow each finding back to its evidence, inspect the reasoning trace, and see the limits of the conclusion. The desktop uses deterministic checks and works without a cloud LLM.
 
+
 **v0.1 in preparation · Windows x64 · Local processing · 12 interface languages**
 
 Public version: [0.1](VERSION). npm, Cargo and Tauri use the technical version `0.1.0`. This page describes the implemented v0.1 desktop. The Windows installer will be built and validated before publication; broader design documents include future plans.
