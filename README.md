@@ -6,6 +6,7 @@
 
 **Observe. Investigate. Understand.**
 
+
 When a PC feels slow, a single utilization number rarely explains what changed. SherlockPC keeps the measurements that make a comparison possible: CPU, RAM, swap and process snapshots, stored locally over time.
 
 Run a bounded investigation to compare the current state with saved history. Follow each finding back to its evidence, inspect the reasoning trace, and see the limits of the conclusion. The desktop uses deterministic checks and works without a cloud LLM.
